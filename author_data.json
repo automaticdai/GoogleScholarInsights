@@ -20,7 +20,7 @@
     ],
     "email_domain": "@york.ac.uk",
     "homepage": "https://www.xiaotiandai.com/",
-    "citedby": 536,
+    "citedby": 543,
     "publications": [
         {
             "container_type": "Publication",
@@ -69,7 +69,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:-f6ydRqryjwC",
-            "num_citations": 80,
+            "num_citations": 82,
             "citedby_url": "/scholar?hl=en&cites=17932338192299469238",
             "cites_id": [
                 "17932338192299469238"
@@ -81,7 +81,8 @@
                 "2022": 13,
                 "2023": 24,
                 "2024": 16,
-                "2025": 20
+                "2025": 21,
+                "2026": 1
             }
         },
         {
@@ -101,7 +102,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:NaGl4SEjCO4C",
-            "num_citations": 47,
+            "num_citations": 49,
             "citedby_url": "/scholar?hl=en&cites=11459346700640039032",
             "cites_id": [
                 "11459346700640039032"
@@ -112,7 +113,8 @@
                 "2022": 1,
                 "2023": 10,
                 "2024": 14,
-                "2025": 22
+                "2025": 23,
+                "2026": 1
             }
         },
         {
@@ -172,10 +174,10 @@
             "cites_per_year": {
                 "2020": 3,
                 "2021": 8,
-                "2022": 9,
-                "2023": 6,
-                "2024": 10,
-                "2025": 5
+                "2022": 8,
+                "2023": 7,
+                "2024": 9,
+                "2025": 6
             }
         },
         {
@@ -234,8 +236,8 @@
                 "2021": 7,
                 "2022": 4,
                 "2023": 3,
-                "2024": 6,
-                "2025": 5
+                "2024": 5,
+                "2025": 6
             }
         },
         {
@@ -294,7 +296,8 @@
             "cites_per_year": {
                 "2023": 2,
                 "2024": 11,
-                "2025": 8
+                "2025": 8,
+                "2026": 2
             }
         },
         {
@@ -391,6 +394,32 @@
             "container_type": "Publication",
             "source": "AUTHOR_PUBLICATION_ENTRY",
             "bib": {
+                "title": "Cache-aware allocation of parallel jobs on multi-cores based on learned recency",
+                "pub_year": 2023,
+                "citation": "Proceedings of the 31st International Conference on Real-Time Networks and \u2026, 2023",
+                "author": "Shuai Zhao and Xiaotian Dai and Benjamin Lesage and Iain Bate",
+                "pages": "177-187",
+                "abstract": " Scheduling of tasks on multi- and many-cores benefits significantly from the efficient use of caches. Most previous approaches use the static analysis of software in the context of the processing hardware to derive fixed allocations of software to the cache. However, there are many issues with this approach in terms of pessimism, scalability, analysis complexity, maintenance cost, etc. Furthermore, with ever more complex functionalities being implemented in the system, it becomes nearly impracticable to use static analysis for deriving cache-aware scheduling methods. This paper focuses on a dynamic approach to maximise the throughput of multi-core systems by benefiting from the cache based on empirical assessments. The principal contribution is a novel cache-aware allocation for parallel jobs that are organised as directed acyclic graphs (DAGs). Instead of allocating instruction and data blocks to caches, the \u2026"
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:SeFeTyx0c_EC",
+            "num_citations": 11,
+            "citedby_url": "/scholar?hl=en&cites=13652454800343972476",
+            "cites_id": [
+                "13652454800343972476"
+            ],
+            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3575757.3593642",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:fDqUnk5Dd70J:scholar.google.com/",
+            "cites_per_year": {
+                "2023": 2,
+                "2024": 3,
+                "2025": 6
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
                 "title": "A high-resilience imprecise computing architecture for mixed-criticality systems",
                 "pub_year": 2022,
                 "citation": "IEEE Transactions on Computers 72 (1), 29-42, 2022",
@@ -415,32 +444,6 @@
                 "2023": 1,
                 "2024": 4,
                 "2025": 6
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "Cache-aware allocation of parallel jobs on multi-cores based on learned recency",
-                "pub_year": 2023,
-                "citation": "Proceedings of the 31st International Conference on Real-Time Networks and \u2026, 2023",
-                "author": "Shuai Zhao and Xiaotian Dai and Benjamin Lesage and Iain Bate",
-                "pages": "177-187",
-                "abstract": " Scheduling of tasks on multi- and many-cores benefits significantly from the efficient use of caches. Most previous approaches use the static analysis of software in the context of the processing hardware to derive fixed allocations of software to the cache. However, there are many issues with this approach in terms of pessimism, scalability, analysis complexity, maintenance cost, etc. Furthermore, with ever more complex functionalities being implemented in the system, it becomes nearly impracticable to use static analysis for deriving cache-aware scheduling methods. This paper focuses on a dynamic approach to maximise the throughput of multi-core systems by benefiting from the cache based on empirical assessments. The principal contribution is a novel cache-aware allocation for parallel jobs that are organised as directed acyclic graphs (DAGs). Instead of allocating instruction and data blocks to caches, the \u2026"
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:SeFeTyx0c_EC",
-            "num_citations": 10,
-            "citedby_url": "/scholar?hl=en&cites=13652454800343972476",
-            "cites_id": [
-                "13652454800343972476"
-            ],
-            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3575757.3593642",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:fDqUnk5Dd70J:scholar.google.com/",
-            "cites_per_year": {
-                "2023": 2,
-                "2024": 3,
-                "2025": 5
             }
         },
         {
@@ -512,8 +515,7 @@
                 "pub_year": 2022,
                 "citation": "Zenodo, 2022",
                 "author": "Xiaotian Dai",
-                "journal": "Zenodo",
-                "abstract": "dag-gen-rnd: A randomized multi-DAG task generator for scheduling and allocation research \n- ADS Now on home page ads icon ads Enable full ADS view ADS dag-gen-rnd: A \nrandomized multi-DAG task generator for scheduling and allocation research Dai, Xiaotian \nAbstract A randomized multi-DAG task generator for scheduling and allocation research. \nPublication: Zenodo Pub Date: DOI: 10.5281/zenodo.6334205 Bibcode: 2022zndo...6334205D \nKeywords: DAG generator; scheduling and allocation; real-time systems; high performance \ncomputing full text sources Zenodo | \u00a9 The SAO Astrophysics Data System adshelp[at]cfa.harvard.edu \nThe ADS is operated by the Smithsonian Astrophysical Observatory under NASA Cooperative \nAgreement 80NSSC21M0056 Smithsonian logo Harvard Center for Astrophysics logo NASA \nlogo *The material contained in this document is based upon work supported by a National \u2026"
+                "journal": "Zenodo"
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:4OULZ7Gr8RgC",
@@ -522,11 +524,41 @@
             "cites_id": [
                 "12184480902398975304"
             ],
-            "pub_url": "https://ui.adsabs.harvard.edu/abs/2022zndo...6334205D/abstract",
+            "pub_url": "https://scholar.google.com/scholar?cluster=12184480902398975304&hl=en&oi=scholarr",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:SJ0FGNP4F6kJ:scholar.google.com/",
             "cites_per_year": {
                 "2024": 4,
                 "2025": 1
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
+                "title": "Context-aware graceful degradation for mixed-criticality scheduling in autonomous systems",
+                "pub_year": 2023,
+                "citation": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and \u2026, 2023",
+                "author": "Jie Zou and Xiaotian Dai and John A McDermid",
+                "journal": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
+                "volume": "43",
+                "number": "3",
+                "pages": "788-801",
+                "publisher": "IEEE",
+                "abstract": "Autonomous systems are of high complexity and often regarded as mixed-criticality systems (MCSs) in which functions are allocated criticality levels according to risk assessment based on safety standards. Typically, tasks have different real-time requirements across criticality levels, and the estimated worst-case execution times (WCETs) are distinct. Further, limitations in computational resources increase the difficulty of integrating tasks onto one shared hardware platform. Conventionally, all nonsafety critical tasks must be discarded or suspended to guarantee the execution of safety-critical tasks when facing a timing fault. This typically leads to a considerable decrease in the system\u2019s Quality-of-Service (QoS). Achieving more graceful degradation is critical to minimizing QoS reduction. This work focuses on tackling timing faults and proposes a novel graceful degradation strategy for use in a mixed-criticality context \u2026"
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:zA6iFVUQeVQC",
+            "num_citations": 4,
+            "citedby_url": "/scholar?hl=en&cites=9736170726918576884",
+            "cites_id": [
+                "9736170726918576884"
+            ],
+            "pub_url": "https://ieeexplore.ieee.org/abstract/document/10310275/",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:9NqJErHTHYcJ:scholar.google.com/",
+            "cites_per_year": {
+                "2024": 1,
+                "2025": 2,
+                "2026": 1
             }
         },
         {
@@ -609,35 +641,6 @@
                 "2023": 1,
                 "2024": 0,
                 "2025": 1
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "Context-aware graceful degradation for mixed-criticality scheduling in autonomous systems",
-                "pub_year": 2023,
-                "citation": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and \u2026, 2023",
-                "author": "Jie Zou and Xiaotian Dai and John A McDermid",
-                "journal": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
-                "volume": "43",
-                "number": "3",
-                "pages": "788-801",
-                "publisher": "IEEE",
-                "abstract": "Autonomous systems are of high complexity and often regarded as mixed-criticality systems (MCSs) in which functions are allocated criticality levels according to risk assessment based on safety standards. Typically, tasks have different real-time requirements across criticality levels, and the estimated worst-case execution times (WCETs) are distinct. Further, limitations in computational resources increase the difficulty of integrating tasks onto one shared hardware platform. Conventionally, all nonsafety critical tasks must be discarded or suspended to guarantee the execution of safety-critical tasks when facing a timing fault. This typically leads to a considerable decrease in the system\u2019s Quality-of-Service (QoS). Achieving more graceful degradation is critical to minimizing QoS reduction. This work focuses on tackling timing faults and proposes a novel graceful degradation strategy for use in a mixed-criticality context \u2026"
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:zA6iFVUQeVQC",
-            "num_citations": 3,
-            "citedby_url": "/scholar?hl=en&cites=9736170726918576884",
-            "cites_id": [
-                "9736170726918576884"
-            ],
-            "pub_url": "https://ieeexplore.ieee.org/abstract/document/10310275/",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:9NqJErHTHYcJ:scholar.google.com/",
-            "cites_per_year": {
-                "2024": 1,
-                "2025": 2
             }
         },
         {
@@ -735,7 +738,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:70eg2SAEIzsC",
-            "num_citations": 2,
+            "num_citations": 3,
             "citedby_url": "/scholar?hl=en&cites=2201555895810433937",
             "cites_id": [
                 "2201555895810433937"
@@ -743,7 +746,8 @@
             "pub_url": "https://dl.acm.org/doi/abs/10.1145/3577949.3577965",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:kaPyQmx_jR4J:scholar.google.com/",
             "cites_per_year": {
-                "2024": 2
+                "2024": 2,
+                "2025": 1
             }
         },
         {
@@ -830,16 +834,15 @@
             "bib": {
                 "title": "LEFT-RS: A Lock-Free Fault-Tolerant Resource Sharing Protocol for Multicore Real-Time Systems",
                 "pub_year": 2025,
-                "citation": "RTSS 2025: proceedings, 2025",
-                "author": "Nan Chen and STEVEN XIAOTIAN DAI and Tong Cheng and ALAN BURNS and IAIN JOHN BATE and SHUAI ZHAO",
-                "conference": "RTSS 2025: proceedings",
-                "publisher": "IEEE",
+                "citation": "arXiv preprint arXiv:2512.21701, 2025",
+                "author": "Nan Chen and Xiaotian Dai and Tong Cheng and Alan Burns and Iain Bate and Shuai Zhao",
+                "journal": "arXiv preprint arXiv:2512.21701",
                 "abstract": "Emerging real-time applications have driven the transition to multicore embedded systems, where tasks must share resources due to functional demands and limited availability. These resources, whether local or global, are protected within critical sections to prevent race conditions, with locking protocols ensuring both exclusive access and timing requirements. However, transient faults occurring within critical sections can disrupt execution and propagate errors across multiple tasks. Conventional locking protocols fail to address such faults, and integrating traditional fault tolerance techniques often increases blocking. Recent approaches improve fault recovery through parallel replica execution; however, challenges remain due to sequential accessing, coordination overhead, and susceptibility to common-mode faults. In this paper, we propose a Lock-frEe Fault-Tolerant Resource Sharing (LEFT-RS) protocol for multicore real-time systems. LEFT-RS allows tasks to concurrently access and read global resources while entering their critical sections in parallel. Each task can complete its access earlier upon successful execution if other tasks experience faults, thereby improving the efficiency of resource usage. Our design also limits the overhead and enhances fault resilience. We present a comprehensive worst-case response time analysis to ensure timing guarantees. Extensive evaluation results demonstrate that our method significantly outperforms existing approaches, achieving up to an 84.5% improvement in schedulability on average."
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:cFHS6HbyZ2cC",
             "num_citations": 0,
-            "pub_url": "https://eprints.whiterose.ac.uk/id/eprint/232452/",
+            "pub_url": "https://arxiv.org/abs/2512.21701",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:pb4uMbJJfhsJ:scholar.google.com/",
             "cites_per_year": {}
         },
@@ -906,7 +909,7 @@
             "cites_per_year": {}
         }
     ],
-    "citedby5y": 524,
+    "citedby5y": 491,
     "hindex": 12,
     "hindex5y": 12,
     "i10index": 14,
@@ -915,9 +918,10 @@
         "2019": 10,
         "2020": 38,
         "2021": 64,
-        "2022": 77,
-        "2023": 90,
-        "2024": 141,
-        "2025": 110
+        "2022": 76,
+        "2023": 91,
+        "2024": 139,
+        "2025": 116,
+        "2026": 5
     }
 }

@@ -2,6 +2,8 @@
 import argparse
 import json
 import logging
+import time
+import random
 from typing import Optional, List, Dict, Any
 import requests
 from scholarly import scholarly, ProxyGenerator
@@ -10,6 +12,15 @@ from fake_useragent import UserAgent
 # Logger config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Rate limiting configuration (to avoid IP bans)
+MIN_DELAY_BETWEEN_PUBS = 2.0  # Minimum seconds between publication fetches
+MAX_DELAY_BETWEEN_PUBS = 5.0  # Maximum seconds between publication fetches
+MIN_DELAY_BETWEEN_SEARCHES = 1.0  # Minimum seconds between search queries
+MAX_DELAY_BETWEEN_SEARCHES = 3.0  # Maximum seconds between search queries
+RETRY_BASE_DELAY = 5.0  # Base delay for exponential backoff
+MAX_RETRY_DELAY = 60.0  # Maximum retry delay
+MAX_RETRIES = 3  # Maximum number of retry attempts
 
 def setup_proxy() -> bool:
     """Sets up a free proxy generator and custom session.
@@ -52,6 +63,31 @@ def setup_proxy() -> bool:
         logger.warning(f"Proxy setup failed with error: {e}. Proceeding without proxy.")
         return False
 
+def safe_fetch_with_retry(fetch_func, *args, max_retries: int = MAX_RETRIES, **kwargs):
+    """Safely fetch data with exponential backoff retry logic.
+    
+    Args:
+        fetch_func: Function to call for fetching data.
+        *args: Positional arguments for fetch_func.
+        max_retries: Maximum number of retry attempts.
+        **kwargs: Keyword arguments for fetch_func.
+    
+    Returns:
+        Result from fetch_func, or None if all retries failed.
+    """
+    for attempt in range(max_retries):
+        try:
+            return fetch_func(*args, **kwargs)
+        except Exception as e:
+            if attempt < max_retries - 1:
+                delay = min(RETRY_BASE_DELAY * (2 ** attempt), MAX_RETRY_DELAY)
+                logger.warning(f"Fetch failed (attempt {attempt + 1}/{max_retries}): {e}")
+                logger.info(f"Retrying in {delay:.1f} seconds...")
+                time.sleep(delay)
+            else:
+                logger.error(f"Fetch failed after {max_retries} attempts: {e}")
+                return None
+
 def fetch_by_id(scholar_id: str, limit: Optional[int] = None) -> Optional[Dict[str, Any]]:
     """Fetches author data by Scholar ID.
     
@@ -78,15 +114,33 @@ def fetch_by_id(scholar_id: str, limit: Optional[int] = None) -> Optional[Dict[s
             
         full_pubs = []
         total_pubs = len(pubs_to_process)
+        start_time = time.time()
+        
         for i, pub in enumerate(pubs_to_process, 1):
             title = pub.get('bib', {}).get('title', 'Unknown')
-            logger.info(f"Fetching details for publication {i}/{total_pubs}: {title}")
-            try:
-                full_pub = scholarly.fill(pub)
+            logger.info(f"Fetching details for publication {i}/{total_pubs}: {title[:60]}...")
+            
+            # Fetch with retry logic
+            full_pub = safe_fetch_with_retry(scholarly.fill, pub)
+            if full_pub:
                 full_pubs.append(full_pub)
-            except Exception as e:
-                logger.warning(f"Failed to fill publication {i}: {e}")
+            else:
+                logger.warning(f"Using partial data for publication {i}")
                 full_pubs.append(pub)
+            
+            # Rate limiting: add delay between fetches (except after last one)
+            if i < total_pubs:
+                delay = random.uniform(MIN_DELAY_BETWEEN_PUBS, MAX_DELAY_BETWEEN_PUBS)
+                
+                # Calculate and display progress
+                elapsed = time.time() - start_time
+                avg_time_per_pub = elapsed / i
+                remaining_pubs = total_pubs - i
+                estimated_remaining = avg_time_per_pub * remaining_pubs + delay * remaining_pubs
+                
+                logger.info(f"Waiting {delay:.1f}s before next fetch... "
+                          f"(~{estimated_remaining/60:.1f} min remaining)")
+                time.sleep(delay)
 
         author['publications'] = full_pubs
         return author
@@ -108,10 +162,16 @@ def search_candidates(author_name: str, max_results: int = 5) -> List[Dict[str, 
     try:
         search_query = scholarly.search_author(author_name)
         candidates = []
-        for _ in range(max_results):
+        for i in range(max_results):
             try:
                 author = next(search_query)
                 candidates.append(author)
+                
+                # Rate limiting: add delay between search results
+                if i < max_results - 1:
+                    delay = random.uniform(MIN_DELAY_BETWEEN_SEARCHES, MAX_DELAY_BETWEEN_SEARCHES)
+                    logger.info(f"Waiting {delay:.1f}s before next search query...")
+                    time.sleep(delay)
             except StopIteration:
                 break
         return candidates
@@ -128,7 +188,26 @@ def main():
     parser.add_argument("--limit", type=int, default=10, help="Limit number of publications to fetch details for (default 10).")
     parser.add_argument("--output", type=str, default="author_data.json", help="Output JSON file.")
     
+    # Rate limiting arguments
+    parser.add_argument("--min-delay", type=float, default=2.0, 
+                       help="Minimum delay between requests in seconds (default: 2.0).")
+    parser.add_argument("--max-delay", type=float, default=5.0,
+                       help="Maximum delay between requests in seconds (default: 5.0).")
+    parser.add_argument("--no-delay", action="store_true",
+                       help="Disable rate limiting delays (NOT RECOMMENDED - may cause IP ban).")
+    
     args = parser.parse_args()
+    
+    # Override global delay settings if specified
+    global MIN_DELAY_BETWEEN_PUBS, MAX_DELAY_BETWEEN_PUBS
+    if args.no_delay:
+        logger.warning("Rate limiting disabled! This may result in IP ban from Google Scholar.")
+        MIN_DELAY_BETWEEN_PUBS = 0
+        MAX_DELAY_BETWEEN_PUBS = 0
+    else:
+        MIN_DELAY_BETWEEN_PUBS = args.min_delay
+        MAX_DELAY_BETWEEN_PUBS = args.max_delay
+        logger.info(f"Rate limiting enabled: {MIN_DELAY_BETWEEN_PUBS:.1f}s - {MAX_DELAY_BETWEEN_PUBS:.1f}s between requests")
     
     setup_proxy()
     

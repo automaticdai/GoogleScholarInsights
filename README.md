@@ -35,6 +35,7 @@ A comprehensive toolkit for fetching, analyzing, and visualizing Google Scholar 
 
 ## Usage
 
+
 ### 1. Fetching Data (`fetch_data.py`)
 This script retrieves data from Google Scholar and saves it to a JSON file.
 
@@ -49,6 +50,33 @@ If you know the Scholar ID (found in the URL of their profile, e.g., `user=<ID>`
 python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --limit 100
 ```
 *`--limit` controls the number of publications to fetch full details for (default: 10). Set high for full analysis, but beware of time/rate limits.*
+
+**Rate Limiting (Prevents IP Bans)**
+
+The script includes built-in rate limiting with randomized delays to avoid Google Scholar bans:
+- **Default**: 2-5 second random delay between requests (recommended)
+- **Configurable**: Use `--min-delay` and `--max-delay` to adjust
+- **Progress tracking**: Shows estimated time remaining during fetch
+
+```bash
+# Use default delays (safest, recommended)
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --limit 50
+
+# Faster fetching (higher ban risk)
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --limit 50 --min-delay 1.0 --max-delay 2.0
+
+# Slower fetching (safest for large datasets)
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --limit 100 --min-delay 5.0 --max-delay 10.0
+
+# Disable delays (testing only, NOT RECOMMENDED)
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --limit 5 --no-delay
+```
+
+**Rate Limiting Options:**
+- `--min-delay SECONDS` - Minimum delay between requests (default: 2.0)
+- `--max-delay SECONDS` - Maximum delay between requests (default: 5.0)
+- `--no-delay` - Disable rate limiting (NOT RECOMMENDED - may cause IP ban)
+
 
 ### 2. Analyzing Data (`analyze_data.py`)
 Generates a report from the fetched JSON data.
