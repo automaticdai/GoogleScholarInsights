@@ -233,6 +233,12 @@
 
             <div class="charts-grid">
                 <div class="chart-card">
+                    <h2>Overall Citations</h2>
+                    <div class="chart-container">
+                        <canvas id="cumulative-citation-chart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
                     <h2>Citation Trends</h2>
                     <div class="chart-container">
                         <canvas id="citation-chart"></canvas>
@@ -329,6 +335,37 @@
                         data: citationData.map(d => d[1]),
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Cumulative citation chart
+            let cumulative = 0;
+            const cumulativeData = citationData.map(d => {
+                cumulative += d[1];
+                return cumulative;
+            });
+            charts.cumulativeCitation = new Chart(document.getElementById('cumulative-citation-chart'), {
+                type: 'line',
+                data: {
+                    labels: citationData.map(d => d[0]),
+                    datasets: [{
+                        label: 'Cumulative Citations',
+                        data: cumulativeData,
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
                         tension: 0.4,
                         fill: true
                     }]

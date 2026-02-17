@@ -1,6 +1,7 @@
 """Flask web application for Google Scholar dashboard."""
 import os
 import json
+import re
 from flask import Flask, render_template, jsonify, send_from_directory
 from scripts.analyze_data import ScholarAnalyzer, load_data
 
@@ -63,7 +64,15 @@ def get_analysis():
         # Add publication summaries (top 20 for display)
         for pub in analyzer.publications[:20]:
             bib = pub.get('bib', {})
-            venue = bib.get('venue') or bib.get('journal') or bib.get('conference', '')
+            venue = bib.get('venue') or bib.get('journal') or bib.get('conference') or ''
+            if not venue:
+                # Extract venue from citation string (format: "Venue, pages, year")
+                citation = bib.get('citation', '')
+                if citation:
+                    venue = re.sub(r',\s*\d{4}\s*$', '', citation)
+                    venue = re.sub(r',\s*[\d\u2013-]+\s*$', '', venue)
+                    venue = re.sub(r'[\s\u2026.]*$', '', venue)
+                    venue = re.sub(r'\s+(?:and|of|the|in|on|for|with|a|an)\s*$', '', venue, flags=re.IGNORECASE).strip()
             analysis['publications'].append({
                 'title': bib.get('title', 'Unknown'),
                 'year': bib.get('pub_year', 'Unknown'),

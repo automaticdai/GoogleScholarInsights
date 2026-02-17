@@ -32,69 +32,14 @@ class ScholarAnalyzer:
         }
 
     def _normalize_keyword(self, word: str) -> str:
-        """Normalizes a keyword by handling compound words, plurals, and variations.
-        
+        """Normalizes a keyword by handling plurals and variations.
+
         Args:
             word: The keyword to normalize.
-        
+
         Returns:
             Normalized keyword.
         """
-        # Common prefixes that should be hyphenated when found in compound words
-        hyphenated_prefixes = {
-            'multi', 'real', 'time', 'cache', 'cyber', 'mixed', 'non', 'pre', 
-            'post', 'semi', 'sub', 'super', 'ultra', 'inter', 'intra', 'over',
-            'under', 'cross', 'self', 'auto', 'pseudo', 'quasi', 'micro',
-            'macro', 'meta', 'hyper', 'co', 'anti', 'pro', 'counter', 'de',
-            're', 'un', 'in', 'im', 'dis', 'en', 'ex', 'out', 'up', 'down',
-            'off', 'on', 'over', 'under', 'with', 'without', 'full', 'half',
-            'all', 'any', 'some', 'every', 'no', 'new', 'old', 'high', 'low',
-            'big', 'small', 'large', 'wide', 'narrow', 'long', 'short', 'fast',
-            'slow', 'early', 'late', 'first', 'last', 'next', 'previous',
-            'single', 'double', 'triple', 'quad', 'many', 'few', 'most', 'least'
-        }
-        
-        # Common suffixes that might appear in compound words
-        hyphenated_suffixes = {
-            'aware', 'based', 'centric', 'driven', 'enabled', 'free', 'friendly',
-            'oriented', 'proof', 'ready', 'related', 'sensitive', 'specific',
-            'style', 'type', 'wise', 'worthy', 'less', 'ful', 'like', 'wide',
-            'scale', 'level', 'grade', 'class', 'rate', 'speed', 'time', 'space',
-            'bound', 'limited', 'controlled', 'managed', 'optimized', 'tuned',
-            'adaptive', 'dynamic', 'static', 'active', 'passive', 'intelligent',
-            'smart', 'automatic', 'manual', 'semi', 'quasi', 'pseudo', 'virtual',
-            'real', 'true', 'false', 'positive', 'negative', 'neutral'
-        }
-        
-        # If already hyphenated, return as-is
-        if '-' in word:
-            return word
-        
-        # Try to detect and normalize compound words
-        normalized = word
-        
-        # Check for common prefix patterns (e.g., "realtime" -> "real-time")
-        for prefix in sorted(hyphenated_prefixes, key=len, reverse=True):
-            if normalized.startswith(prefix) and len(normalized) > len(prefix):
-                # Check if the remaining part is a valid word
-                remaining = normalized[len(prefix):]
-                if len(remaining) >= 3:  # Minimum word length
-                    # Check if it could be a compound (e.g., "time", "core", "physical")
-                    if remaining in hyphenated_suffixes or len(remaining) >= 4:
-                        normalized = f"{prefix}-{remaining}"
-                        break
-        
-        # Check for common suffix patterns (e.g., "cacheaware" -> "cache-aware")
-        if '-' not in normalized:
-            for suffix in sorted(hyphenated_suffixes, key=len, reverse=True):
-                if normalized.endswith(suffix) and len(normalized) > len(suffix):
-                    remaining = normalized[:-len(suffix)]
-                    if len(remaining) >= 3:
-                        # Check if remaining part could be a prefix
-                        if remaining in hyphenated_prefixes or len(remaining) >= 4:
-                            normalized = f"{remaining}-{suffix}"
-                            break
-        
         # Normalize plurals to singular for consistency (conservative approach)
         # Common technical terms that should be normalized (plural -> singular)
         plural_to_singular = {
@@ -115,33 +60,47 @@ class ScholarAnalyzer:
             'channels': 'channel', 'streams': 'stream', 'flows': 'flow', 'sessions': 'session',
             'policies': 'policy', 'strategies': 'strategy', 'mechanisms': 'mechanism',
             'studies': 'study', 'experiments': 'experiment', 'tests': 'test', 'benchmarks': 'benchmark',
-            'metrics': 'metric', 'measurements': 'measurement', 'results': 'result', 'findings': 'finding'
+            'metrics': 'metric', 'measurements': 'measurement', 'results': 'result', 'findings': 'finding',
+            'cores': 'core', 'processors': 'processor', 'controllers': 'controller',
+            'constraints': 'constraint', 'deadlines': 'deadline', 'priorities': 'priority',
+            'resources': 'resource', 'workloads': 'workload', 'partitions': 'partition',
+            'platforms': 'platform', 'kernels': 'kernel', 'schedulers': 'scheduler',
+            'sensors': 'sensor', 'vehicles': 'vehicle', 'robots': 'robot', 'drones': 'drone'
         }
-        
+
         # Set of known singular forms for pattern matching
         known_singulars = set(plural_to_singular.values())
-        
+
+        # For hyphenated words, normalize the last component's plural
+        if '-' in word:
+            parts = word.rsplit('-', 1)
+            last = parts[1]
+            if last in plural_to_singular:
+                return f"{parts[0]}-{plural_to_singular[last]}"
+            elif last.endswith('s') and len(last) > 3:
+                base = last[:-1]
+                if base in known_singulars:
+                    return f"{parts[0]}-{base}"
+            return word
+
         # Check if word is a known plural form
-        if normalized in plural_to_singular:
-            normalized = plural_to_singular[normalized]
+        if word in plural_to_singular:
+            return plural_to_singular[word]
         # Handle common plural patterns for technical terms
-        elif normalized.endswith('ies') and len(normalized) > 4:
-            # "policies" -> "policy", "strategies" -> "strategy"
-            base = normalized[:-3] + 'y'
+        if word.endswith('ies') and len(word) > 4:
+            base = word[:-3] + 'y'
             if base in known_singulars:
-                normalized = base
-        elif normalized.endswith('es') and len(normalized) > 3:
-            # "approaches" -> "approach", "processes" -> "process"
-            base = normalized[:-2]
+                return base
+        elif word.endswith('es') and len(word) > 3:
+            base = word[:-2]
             if base in known_singulars:
-                normalized = base
-        elif normalized.endswith('s') and len(normalized) > 3:
-            # Only normalize if it's a known technical term pattern
-            base = normalized[:-1]
+                return base
+        elif word.endswith('s') and len(word) > 3:
+            base = word[:-1]
             if base in known_singulars:
-                normalized = base
-        
-        return normalized
+                return base
+
+        return word
 
     def get_research_areas(self, top_n: int = 10) -> List[Tuple[str, int]]:
         """Extracts common keywords from publication titles.
@@ -229,12 +188,20 @@ class ScholarAnalyzer:
         for i, pub in enumerate(self.publications, 1):
             bib = pub.get('bib', {})
             title = bib.get('title', 'Unknown Title')
-            venue = bib.get('venue') or bib.get('journal') or bib.get('conference')
-            
+            venue = bib.get('venue') or bib.get('journal') or bib.get('conference') or ''
+            if not venue:
+                # Extract venue from citation string (format: "Venue, pages, year")
+                citation = bib.get('citation', '')
+                if citation:
+                    venue = re.sub(r',\s*\d{4}\s*$', '', citation)
+                    venue = re.sub(r',\s*[\d\u2013-]+\s*$', '', venue)
+                    venue = re.sub(r'[\s\u2026.]*$', '', venue)
+                    venue = re.sub(r'\s+(?:and|of|the|in|on|for|with|a|an)\s*$', '', venue, flags=re.IGNORECASE).strip()
+
             if verbose:
                 print(f"\n[{i}/{len(self.publications)}] {title[:60]}...")
                 print(f"  Venue: {venue if venue else 'NOT FOUND'}")
-            
+
             if not venue:
                 rank_counts["No Venue Found"] += 1
                 if verbose:

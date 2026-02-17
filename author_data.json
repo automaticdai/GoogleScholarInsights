@@ -20,7 +20,7 @@
     ],
     "email_domain": "@york.ac.uk",
     "homepage": "https://www.xiaotiandai.com/",
-    "citedby": 543,
+    "citedby": 557,
     "publications": [
         {
             "container_type": "Publication",
@@ -38,7 +38,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:_kc_bZDykSQC",
-            "num_citations": 91,
+            "num_citations": 95,
             "citedby_url": "/scholar?hl=en&cites=5019954335403981056",
             "cites_id": [
                 "5019954335403981056"
@@ -46,13 +46,14 @@
             "pub_url": "https://www.sciencedirect.com/science/article/pii/S0164121219301062",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:ALlvBt91qkUJ:scholar.google.com/",
             "cites_per_year": {
-                "2019": 7,
+                "2019": 8,
                 "2020": 15,
-                "2021": 16,
+                "2021": 17,
                 "2022": 12,
-                "2023": 12,
+                "2023": 11,
                 "2024": 21,
-                "2025": 8
+                "2025": 10,
+                "2026": 1
             }
         },
         {
@@ -69,7 +70,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:-f6ydRqryjwC",
-            "num_citations": 82,
+            "num_citations": 84,
             "citedby_url": "/scholar?hl=en&cites=17932338192299469238",
             "cites_id": [
                 "17932338192299469238"
@@ -81,7 +82,7 @@
                 "2022": 13,
                 "2023": 24,
                 "2024": 16,
-                "2025": 21,
+                "2025": 23,
                 "2026": 1
             }
         },
@@ -102,7 +103,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:NaGl4SEjCO4C",
-            "num_citations": 49,
+            "num_citations": 50,
             "citedby_url": "/scholar?hl=en&cites=11459346700640039032",
             "cites_id": [
                 "11459346700640039032"
@@ -113,7 +114,7 @@
                 "2022": 1,
                 "2023": 10,
                 "2024": 14,
-                "2025": 23,
+                "2025": 24,
                 "2026": 1
             }
         },
@@ -132,7 +133,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:dhFuZR0502QC",
-            "num_citations": 46,
+            "num_citations": 45,
             "citedby_url": "/scholar?hl=en&cites=4600189281173055659",
             "cites_id": [
                 "4600189281173055659"
@@ -142,10 +143,38 @@
             "cites_per_year": {
                 "2020": 5,
                 "2021": 8,
-                "2022": 8,
+                "2022": 7,
                 "2023": 6,
                 "2024": 13,
                 "2025": 4
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
+                "title": "Fixed-priority scheduling and controller co-design for time-sensitive networks",
+                "pub_year": 2020,
+                "citation": "Proceedings of the 39th International Conference on Computer-Aided Design, 1-9, 2020",
+                "author": "Xiaotian Dai and Shuai Zhao and Yu Jiang and Xun Jiao and Xiaobo Sharon Hu and Wanli Chang",
+                "pages": "1-9",
+                "abstract": "Time-sensitive networking (TSN) is a set of standardised communication protocols developed under the IEEE 802.1 working group. TSN aims to support deterministic communication based on network schedules that are distributively configured. It is widely considered as the future in-vehicle network solution for highly automated driving, where the requirement on timing guarantee is alongside the demand of high communication bandwidth. In this work, we study a setting of periodic control and non-control packets, with implicit and arbitrary deadlines, respectively. As the FIFO (first-in, first-out) queues in the 802.1Qbv switch incur long delay in the worst case, which prevents the control tasks from achieving short sampling periods and thus impedes control performance optimisation, we propose the first fixed-priority scheduling (FPS) approach for TSN by leveraging its gate control features. In this context, we develop a \u2026"
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:IWHjjKOFINEC",
+            "num_citations": 41,
+            "citedby_url": "/scholar?hl=en&cites=2805306555151411629",
+            "cites_id": [
+                "2805306555151411629"
+            ],
+            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3400302.3415715",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:renf4XJz7iYJ:scholar.google.com/",
+            "cites_per_year": {
+                "2021": 7,
+                "2022": 7,
+                "2023": 6,
+                "2024": 10,
+                "2025": 11
             }
         },
         {
@@ -175,37 +204,9 @@
                 "2020": 3,
                 "2021": 8,
                 "2022": 8,
-                "2023": 7,
-                "2024": 9,
-                "2025": 6
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "Fixed-priority scheduling and controller co-design for time-sensitive networks",
-                "pub_year": 2020,
-                "citation": "Proceedings of the 39th International Conference on Computer-Aided Design, 1-9, 2020",
-                "author": "Xiaotian Dai and Shuai Zhao and Yu Jiang and Xun Jiao and Xiaobo Sharon Hu and Wanli Chang",
-                "pages": "1-9",
-                "abstract": "Time-sensitive networking (TSN) is a set of standardised communication protocols developed under the IEEE 802.1 working group. TSN aims to support deterministic communication based on network schedules that are distributively configured. It is widely considered as the future in-vehicle network solution for highly automated driving, where the requirement on timing guarantee is alongside the demand of high communication bandwidth. In this work, we study a setting of periodic control and non-control packets, with implicit and arbitrary deadlines, respectively. As the FIFO (first-in, first-out) queues in the 802.1Qbv switch incur long delay in the worst case, which prevents the control tasks from achieving short sampling periods and thus impedes control performance optimisation, we propose the first fixed-priority scheduling (FPS) approach for TSN by leveraging its gate control features. In this context, we develop a \u2026"
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:IWHjjKOFINEC",
-            "num_citations": 38,
-            "citedby_url": "/scholar?hl=en&cites=2805306555151411629",
-            "cites_id": [
-                "2805306555151411629"
-            ],
-            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3400302.3415715",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:renf4XJz7iYJ:scholar.google.com/",
-            "cites_per_year": {
-                "2021": 7,
-                "2022": 7,
                 "2023": 6,
-                "2024": 10,
-                "2025": 8
+                "2024": 9,
+                "2025": 7
             }
         },
         {
@@ -236,8 +237,8 @@
                 "2021": 7,
                 "2022": 4,
                 "2023": 3,
-                "2024": 5,
-                "2025": 6
+                "2024": 6,
+                "2025": 5
             }
         },
         {
@@ -347,7 +348,7 @@
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:QIV2ME_5wuYC",
-            "num_citations": 14,
+            "num_citations": 15,
             "citedby_url": "/scholar?hl=en&cites=2719180929399510783",
             "cites_id": [
                 "2719180929399510783"
@@ -358,7 +359,65 @@
                 "2021": 2,
                 "2022": 3,
                 "2023": 4,
-                "2024": 5
+                "2024": 5,
+                "2025": 1
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
+                "title": "Cache-aware allocation of parallel jobs on multi-cores based on learned recency",
+                "pub_year": 2023,
+                "citation": "Proceedings of the 31st International Conference on Real-Time Networks and \u2026, 2023",
+                "author": "Shuai Zhao and Xiaotian Dai and Benjamin Lesage and Iain Bate",
+                "pages": "177-187",
+                "abstract": " Scheduling of tasks on multi- and many-cores benefits significantly from the efficient use of caches. Most previous approaches use the static analysis of software in the context of the processing hardware to derive fixed allocations of software to the cache. However, there are many issues with this approach in terms of pessimism, scalability, analysis complexity, maintenance cost, etc. Furthermore, with ever more complex functionalities being implemented in the system, it becomes nearly impracticable to use static analysis for deriving cache-aware scheduling methods. This paper focuses on a dynamic approach to maximise the throughput of multi-core systems by benefiting from the cache based on empirical assessments. The principal contribution is a novel cache-aware allocation for parallel jobs that are organised as directed acyclic graphs (DAGs). Instead of allocating instruction and data blocks to caches, the \u2026"
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:SeFeTyx0c_EC",
+            "num_citations": 12,
+            "citedby_url": "/scholar?hl=en&cites=13652454800343972476",
+            "cites_id": [
+                "13652454800343972476"
+            ],
+            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3575757.3593642",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:fDqUnk5Dd70J:scholar.google.com/",
+            "cites_per_year": {
+                "2023": 2,
+                "2024": 3,
+                "2025": 7
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
+                "title": "A high-resilience imprecise computing architecture for mixed-criticality systems",
+                "pub_year": 2022,
+                "citation": "IEEE Transactions on Computers 72 (1), 29-42, 2022",
+                "author": "Zhe Jiang and Xiaotian Dai and Alan Burns and Neil Audsley and Zonghua Gu and Ian Gray",
+                "journal": "IEEE Transactions on Computers",
+                "volume": "72",
+                "number": "1",
+                "pages": "29-42",
+                "publisher": "IEEE",
+                "abstract": "Conventional mixed-criticality systems (MCS)s are designed to terminate the execution of less critical tasks in exceptional situations so that the timing properties of more critical tasks can be preserved. Such a strategy can be controversial and has proven difficult to implement in practice, as it can lead to hazards and reduced functionality due to the absence of the discarded tasks. To mitigate this issue, the imprecise mixed-critically system model (IMCS) has been proposed. In such a model, instead of completely dropping less-critical tasks, these tasks are executed as much as possible through the use of decreased computation precision. Although IMCS could effectively improve the survivability of the less-critical tasks, it also introduces three key drawbacks - run-time computation errors, real-time performance degradation, and lack of flexibility. In this paper, we present a novel IMCS framework, which can (i) mitigate \u2026"
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:lSLTfruPkqcC",
+            "num_citations": 12,
+            "citedby_url": "/scholar?hl=en&cites=13724714903226119411",
+            "cites_id": [
+                "13724714903226119411"
+            ],
+            "pub_url": "https://ieeexplore.ieee.org/abstract/document/9869703/",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:83RN4nz7d74J:scholar.google.com/",
+            "cites_per_year": {
+                "2023": 1,
+                "2024": 4,
+                "2025": 6,
+                "2026": 1
             }
         },
         {
@@ -388,62 +447,6 @@
                 "2023": 2,
                 "2024": 4,
                 "2025": 2
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "Cache-aware allocation of parallel jobs on multi-cores based on learned recency",
-                "pub_year": 2023,
-                "citation": "Proceedings of the 31st International Conference on Real-Time Networks and \u2026, 2023",
-                "author": "Shuai Zhao and Xiaotian Dai and Benjamin Lesage and Iain Bate",
-                "pages": "177-187",
-                "abstract": " Scheduling of tasks on multi- and many-cores benefits significantly from the efficient use of caches. Most previous approaches use the static analysis of software in the context of the processing hardware to derive fixed allocations of software to the cache. However, there are many issues with this approach in terms of pessimism, scalability, analysis complexity, maintenance cost, etc. Furthermore, with ever more complex functionalities being implemented in the system, it becomes nearly impracticable to use static analysis for deriving cache-aware scheduling methods. This paper focuses on a dynamic approach to maximise the throughput of multi-core systems by benefiting from the cache based on empirical assessments. The principal contribution is a novel cache-aware allocation for parallel jobs that are organised as directed acyclic graphs (DAGs). Instead of allocating instruction and data blocks to caches, the \u2026"
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:SeFeTyx0c_EC",
-            "num_citations": 11,
-            "citedby_url": "/scholar?hl=en&cites=13652454800343972476",
-            "cites_id": [
-                "13652454800343972476"
-            ],
-            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3575757.3593642",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:fDqUnk5Dd70J:scholar.google.com/",
-            "cites_per_year": {
-                "2023": 2,
-                "2024": 3,
-                "2025": 6
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "A high-resilience imprecise computing architecture for mixed-criticality systems",
-                "pub_year": 2022,
-                "citation": "IEEE Transactions on Computers 72 (1), 29-42, 2022",
-                "author": "Zhe Jiang and Xiaotian Dai and Alan Burns and Neil Audsley and Zonghua Gu and Ian Gray",
-                "journal": "IEEE Transactions on Computers",
-                "volume": "72",
-                "number": "1",
-                "pages": "29-42",
-                "publisher": "IEEE",
-                "abstract": "Conventional mixed-criticality systems (MCS)s are designed to terminate the execution of less critical tasks in exceptional situations so that the timing properties of more critical tasks can be preserved. Such a strategy can be controversial and has proven difficult to implement in practice, as it can lead to hazards and reduced functionality due to the absence of the discarded tasks. To mitigate this issue, the imprecise mixed-critically system model (IMCS) has been proposed. In such a model, instead of completely dropping less-critical tasks, these tasks are executed as much as possible through the use of decreased computation precision. Although IMCS could effectively improve the survivability of the less-critical tasks, it also introduces three key drawbacks - run-time computation errors, real-time performance degradation, and lack of flexibility. In this paper, we present a novel IMCS framework, which can (i) mitigate \u2026"
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:lSLTfruPkqcC",
-            "num_citations": 11,
-            "citedby_url": "/scholar?hl=en&cites=13724714903226119411",
-            "cites_id": [
-                "13724714903226119411"
-            ],
-            "pub_url": "https://ieeexplore.ieee.org/abstract/document/9869703/",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:83RN4nz7d74J:scholar.google.com/",
-            "cites_per_year": {
-                "2023": 1,
-                "2024": 4,
-                "2025": 6
             }
         },
         {
@@ -515,7 +518,8 @@
                 "pub_year": 2022,
                 "citation": "Zenodo, 2022",
                 "author": "Xiaotian Dai",
-                "journal": "Zenodo"
+                "journal": "Zenodo",
+                "abstract": "dag-gen-rnd: A randomized multi-DAG task generator for scheduling and allocation research \n- ADS Now on home page ads icon ads Enable full ADS view ADS dag-gen-rnd: A \nrandomized multi-DAG task generator for scheduling and allocation research Dai, Xiaotian \nAbstract A randomized multi-DAG task generator for scheduling and allocation research. \nPublication: Zenodo Pub Date: DOI: 10.5281/zenodo.6334205 Bibcode: 2022zndo...6334205D \nKeywords: DAG generator; scheduling and allocation; real-time systems; high performance \ncomputing full text sources Zenodo | \u00a9 The SAO Astrophysics Data System adshelp[at]cfa.harvard.edu \nThe ADS is operated by the Smithsonian Astrophysical Observatory under NASA Cooperative \nAgreement 80NSSC21M0056 Smithsonian logo Harvard Center for Astrophysics logo NASA \nlogo *The material contained in this document is based upon work supported by a National \u2026"
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:4OULZ7Gr8RgC",
@@ -524,7 +528,7 @@
             "cites_id": [
                 "12184480902398975304"
             ],
-            "pub_url": "https://scholar.google.com/scholar?cluster=12184480902398975304&hl=en&oi=scholarr",
+            "pub_url": "https://ui.adsabs.harvard.edu/abs/2022zndo...6334205D/abstract",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:SJ0FGNP4F6kJ:scholar.google.com/",
             "cites_per_year": {
                 "2024": 4,
@@ -565,6 +569,36 @@
             "container_type": "Publication",
             "source": "AUTHOR_PUBLICATION_ENTRY",
             "bib": {
+                "title": "NPRC-I/O: An NoC-Based Real-Time I/O System With Reduced Contention and Enhanced Predictability",
+                "pub_year": 2023,
+                "citation": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and \u2026, 2023",
+                "author": "Zhe Jiang and Xiaotian Dai and Ran Wei and Ian Gray and Zonghua Gu and Qingling Zhao and Shuai Zhao",
+                "journal": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
+                "volume": "42",
+                "number": "12",
+                "pages": "4629-4642",
+                "publisher": "IEEE",
+                "abstract": "All systems rely on inputs and outputs (I/Os) to perceive and interact with their surroundings. In safety-critical systems, it is important to guarantee both the performance and time-predictability of I/O operations. However, with the continued growth of architectural complexity in modern safety-critical systems, satisfying such real-time requirements has become increasingly challenging due to complex I/O transaction paths and extensive hardware contention. In this article, we present a new Network-on-Chip (NoC)-based Predictable I/O system framework (NPRC-I/O) which reduces this contention and ensures the performance and time-predictability of I/O operations. Specifically, NPRC-I/O contains a programmable I/O command controller (NPRC-CC) and a run-time reconfigurable NoC ( NoC), which provides the capability to adjust I/O transaction paths at run time. Using this flexibility, we construct an end-to-end \u2026"
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:3s1wT3WcHBgC",
+            "num_citations": 4,
+            "citedby_url": "/scholar?hl=en&cites=11826417731955430604",
+            "cites_id": [
+                "11826417731955430604"
+            ],
+            "pub_url": "https://ieeexplore.ieee.org/abstract/document/10168011/",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:zJSVpkTgH6QJ:scholar.google.com/",
+            "cites_per_year": {
+                "2024": 3,
+                "2025": 0,
+                "2026": 1
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
                 "title": "Reducing loss of service for mixed-criticality systems through cache-and stress-aware scheduling",
                 "pub_year": 2023,
                 "citation": "Proceedings of the 31st International Conference on Real-Time Networks and \u2026, 2023",
@@ -581,6 +615,32 @@
             ],
             "pub_url": "https://dl.acm.org/doi/abs/10.1145/3575757.3593654",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:WloDyAH-zeMJ:scholar.google.com/",
+            "cites_per_year": {
+                "2023": 1,
+                "2024": 0,
+                "2025": 3
+            }
+        },
+        {
+            "container_type": "Publication",
+            "source": "AUTHOR_PUBLICATION_ENTRY",
+            "bib": {
+                "title": "Graceful Degradation with Condition-and Inference-Awareness for Mixed-Criticality Scheduling in Autonomous Systems",
+                "pub_year": 2023,
+                "citation": "Proceedings of Cyber-Physical Systems and Internet of Things Week 2023, 215-220, 2023",
+                "author": "Jie Zou and Xiaotian Dai and John Mcdermid",
+                "pages": "215-220",
+                "abstract": "In an autonomous system, understanding functional causality is crucial when designing a shared resource scheduling strategy. Without this, the system would be unlikely to achieve a holistic functional quality of service (QoS) and may not meet safety goals. This work proposes a novel graceful degradation strategy in a mixed-criticality context. Instead of discarding computational load at the application level, a qualitative and quantitative definition of importance order is used to assist in realizing finer-grained task-level degradation and preserve more LO-criticality tasks. The causality analysis-based degradation bridges the gap where functional dependencies are not considered in the scheduling design and, thus, leads to the system being able to continue to run with relatively high QoS during the degradation process. "
+            },
+            "filled": true,
+            "author_pub_id": "G7dzNUkAAAAJ:HoB7MX3m0LUC",
+            "num_citations": 4,
+            "citedby_url": "/scholar?hl=en&cites=15900484219691291145",
+            "cites_id": [
+                "15900484219691291145"
+            ],
+            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3576914.3587511",
+            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:CVJnRyfeqdwJ:scholar.google.com/",
             "cites_per_year": {
                 "2023": 1,
                 "2024": 0,
@@ -641,60 +701,6 @@
                 "2023": 1,
                 "2024": 0,
                 "2025": 1
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "NPRC-I/O: An NoC-Based Real-Time I/O System With Reduced Contention and Enhanced Predictability",
-                "pub_year": 2023,
-                "citation": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and \u2026, 2023",
-                "author": "Zhe Jiang and Xiaotian Dai and Ran Wei and Ian Gray and Zonghua Gu and Qingling Zhao and Shuai Zhao",
-                "journal": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
-                "volume": "42",
-                "number": "12",
-                "pages": "4629-4642",
-                "publisher": "IEEE",
-                "abstract": "All systems rely on inputs and outputs (I/Os) to perceive and interact with their surroundings. In safety-critical systems, it is important to guarantee both the performance and time-predictability of I/O operations. However, with the continued growth of architectural complexity in modern safety-critical systems, satisfying such real-time requirements has become increasingly challenging due to complex I/O transaction paths and extensive hardware contention. In this article, we present a new Network-on-Chip (NoC)-based Predictable I/O system framework (NPRC-I/O) which reduces this contention and ensures the performance and time-predictability of I/O operations. Specifically, NPRC-I/O contains a programmable I/O command controller (NPRC-CC) and a run-time reconfigurable NoC ( NoC), which provides the capability to adjust I/O transaction paths at run time. Using this flexibility, we construct an end-to-end \u2026"
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:3s1wT3WcHBgC",
-            "num_citations": 3,
-            "citedby_url": "/scholar?hl=en&cites=11826417731955430604",
-            "cites_id": [
-                "11826417731955430604"
-            ],
-            "pub_url": "https://ieeexplore.ieee.org/abstract/document/10168011/",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:zJSVpkTgH6QJ:scholar.google.com/",
-            "cites_per_year": {
-                "2024": 3
-            }
-        },
-        {
-            "container_type": "Publication",
-            "source": "AUTHOR_PUBLICATION_ENTRY",
-            "bib": {
-                "title": "Graceful Degradation with Condition-and Inference-Awareness for Mixed-Criticality Scheduling in Autonomous Systems",
-                "pub_year": 2023,
-                "citation": "Proceedings of Cyber-Physical Systems and Internet of Things Week 2023, 215-220, 2023",
-                "author": "Jie Zou and Xiaotian Dai and John Mcdermid",
-                "pages": "215-220",
-                "abstract": "In an autonomous system, understanding functional causality is crucial when designing a shared resource scheduling strategy. Without this, the system would be unlikely to achieve a holistic functional quality of service (QoS) and may not meet safety goals. This work proposes a novel graceful degradation strategy in a mixed-criticality context. Instead of discarding computational load at the application level, a qualitative and quantitative definition of importance order is used to assist in realizing finer-grained task-level degradation and preserve more LO-criticality tasks. The causality analysis-based degradation bridges the gap where functional dependencies are not considered in the scheduling design and, thus, leads to the system being able to continue to run with relatively high QoS during the degradation process. "
-            },
-            "filled": true,
-            "author_pub_id": "G7dzNUkAAAAJ:HoB7MX3m0LUC",
-            "num_citations": 3,
-            "citedby_url": "/scholar?hl=en&cites=15900484219691291145",
-            "cites_id": [
-                "15900484219691291145"
-            ],
-            "pub_url": "https://dl.acm.org/doi/abs/10.1145/3576914.3587511",
-            "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:CVJnRyfeqdwJ:scholar.google.com/",
-            "cites_per_year": {
-                "2023": 1,
-                "2024": 0,
-                "2025": 2
             }
         },
         {
@@ -834,15 +840,17 @@
             "bib": {
                 "title": "LEFT-RS: A Lock-Free Fault-Tolerant Resource Sharing Protocol for Multicore Real-Time Systems",
                 "pub_year": 2025,
-                "citation": "arXiv preprint arXiv:2512.21701, 2025",
+                "citation": "2025 IEEE Real-Time Systems Symposium (RTSS), 541-552, 2025",
                 "author": "Nan Chen and Xiaotian Dai and Tong Cheng and Alan Burns and Iain Bate and Shuai Zhao",
-                "journal": "arXiv preprint arXiv:2512.21701",
-                "abstract": "Emerging real-time applications have driven the transition to multicore embedded systems, where tasks must share resources due to functional demands and limited availability. These resources, whether local or global, are protected within critical sections to prevent race conditions, with locking protocols ensuring both exclusive access and timing requirements. However, transient faults occurring within critical sections can disrupt execution and propagate errors across multiple tasks. Conventional locking protocols fail to address such faults, and integrating traditional fault tolerance techniques often increases blocking. Recent approaches improve fault recovery through parallel replica execution; however, challenges remain due to sequential accessing, coordination overhead, and susceptibility to common-mode faults. In this paper, we propose a Lock-frEe Fault-Tolerant Resource Sharing (LEFT-RS) protocol for multicore real-time systems. LEFT-RS allows tasks to concurrently access and read global resources while entering their critical sections in parallel. Each task can complete its access earlier upon successful execution if other tasks experience faults, thereby improving the efficiency of resource usage. Our design also limits the overhead and enhances fault resilience. We present a comprehensive worst-case response time analysis to ensure timing guarantees. Extensive evaluation results demonstrate that our method significantly outperforms existing approaches, achieving up to an 84.5% improvement in schedulability on average."
+                "conference": "2025 IEEE Real-Time Systems Symposium (RTSS)",
+                "pages": "541-552",
+                "publisher": "IEEE",
+                "abstract": "Emerging real-time applications have driven the transition to multicore embedded systems, where tasks must share resources due to functional demands and limited availability. These resources, whether local or global, are protected within critical sections to prevent race conditions, with locking protocols ensuring both exclusive access and timing requirements. However, transient faults occurring within critical sections can disrupt execution and propagate errors across multiple tasks. Conventional locking protocols fail to address such faults, and integrating traditional fault tolerance techniques often increases blocking. Recent approaches improve fault recovery through parallel replica execution; however, challenges remain due to sequential accessing, coordination overhead, and susceptibility to common-mode faults. In this paper, we propose a Lock-frEe Fault-Tolerant Resource Sharing (LEFT-RS) protocol for \u2026"
             },
             "filled": true,
             "author_pub_id": "G7dzNUkAAAAJ:cFHS6HbyZ2cC",
             "num_citations": 0,
-            "pub_url": "https://arxiv.org/abs/2512.21701",
+            "pub_url": "https://ieeexplore.ieee.org/abstract/document/11315092/",
             "url_related_articles": "/scholar?oi=bibs&hl=en&q=related:pb4uMbJJfhsJ:scholar.google.com/",
             "cites_per_year": {}
         },
@@ -909,19 +917,19 @@
             "cites_per_year": {}
         }
     ],
-    "citedby5y": 491,
+    "citedby5y": 504,
     "hindex": 12,
     "hindex5y": 12,
     "i10index": 14,
     "i10index5y": 14,
     "cites_per_year": {
-        "2019": 10,
+        "2019": 11,
         "2020": 38,
-        "2021": 64,
-        "2022": 76,
-        "2023": 91,
-        "2024": 139,
-        "2025": 116,
-        "2026": 5
+        "2021": 65,
+        "2022": 75,
+        "2023": 89,
+        "2024": 140,
+        "2025": 127,
+        "2026": 8
     }
 }
