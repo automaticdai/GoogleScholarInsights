@@ -1,2 +1,5 @@
 __pycache__
 *.pyc
+
+# Generated author data (may contain personal/identifying information)
+author_data.json
