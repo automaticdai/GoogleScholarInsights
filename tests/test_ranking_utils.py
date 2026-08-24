@@ -29,5 +29,10 @@ def test_get_venue_rank_nonexistent_is_unranked():
     assert get_venue_rank('ZZZ totally nonexistent venue 12345') == 'Unranked'
 
 
+def test_get_venue_rank_empty_is_unranked():
+    assert get_venue_rank('') == 'Unranked'
+    assert get_venue_rank(None) == 'Unranked'
+
+
 def test_get_venue_metrics_returns_tuple_with_rank():
     assert get_venue_metrics('ZZZ totally nonexistent venue') == ('Unranked', None, None)

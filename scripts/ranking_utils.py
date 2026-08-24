@@ -181,16 +181,16 @@ def get_venue_rank(venue_name: Optional[str]) -> str:
         venue_name: Name of the venue (journal/conference).
     
     Returns:
-        Rank string (A*, A, B, C, Unranked, or Unknown).
+        Rank string (A*, A, B, C, or Unranked).
     """
     if not venue_name:
-        return "Unknown"
-    
+        return "Unranked"
+
     # Normalize the input venue name
     name_normalized = normalize_venue_name(venue_name)
-    
+
     if not name_normalized:
-        return "Unknown"
+        return "Unranked"
     
     # Direct match with normalized name
     if name_normalized in VENUE_RANKS:
