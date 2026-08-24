@@ -112,9 +112,8 @@ class ScholarAnalyzer:
             List of tuples (keyword, count) sorted by frequency.
         """
         stop_words = {
-            'for', 'and', 'the', 'of', 'in', 'a', 'an', 'to', 'on', 'with', 
-            'using', 'based', 'analysis', 'via', 'study', 'from', 'by', 
-            'network', 'deep', 'learning', 'system', 'systems', 'with',
+            'for', 'and', 'the', 'of', 'in', 'a', 'an', 'to', 'on', 'with',
+            'using', 'based', 'analysis', 'via', 'study', 'from', 'by',
             'toward', 'towards', 'this', 'that', 'these', 'those', 'are',
             'is', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had'
         }
@@ -122,8 +121,9 @@ class ScholarAnalyzer:
         words = []
         for pub in self.publications:
             title = pub.get('bib', {}).get('title', '').lower()
-            # Match words with at least 3 letters, including hyphenated words (e.g., "real-time", "multi-core")
-            tokens = re.findall(r'\b[a-z]+(?:-[a-z]+)*[a-z]{2,}\b', title)
+            # Match words with at least 2 letters (captures acronyms like "ai", "ml"),
+            # including hyphenated words (e.g., "real-time", "multi-core")
+            tokens = re.findall(r'\b[a-z]{2,}(?:-[a-z]+)*\b', title)
             
             for token in tokens:
                 if token not in stop_words:
