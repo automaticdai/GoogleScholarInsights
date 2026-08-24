@@ -301,7 +301,16 @@
             }
             if (data.homepage) {
                 const homepageEl = document.getElementById('homepage');
-                homepageEl.innerHTML = `<a href="${data.homepage}" target="_blank">${data.homepage}</a>`;
+                if (/^https?:\/\//i.test(data.homepage)) {
+                    const link = document.createElement('a');
+                    link.href = data.homepage;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.textContent = data.homepage;
+                    homepageEl.appendChild(link);
+                } else {
+                    homepageEl.textContent = data.homepage;
+                }
             }
             if (data.url_picture) {
                 document.getElementById('profile-img').src = data.url_picture;
@@ -475,14 +484,31 @@
             data.publications.forEach(pub => {
                 const item = document.createElement('div');
                 item.className = 'publication-item';
-                item.innerHTML = `
-                    <h3>${pub.title}</h3>
-                    <div class="meta">
-                        <strong>${pub.year}</strong> | ${pub.venue} | 
-                        <strong>${pub.citations}</strong> citations
-                    </div>
-                    ${pub.url ? `<a href="${pub.url}" target="_blank">View Publication →</a>` : ''}
-                `;
+
+                const title = document.createElement('h3');
+                title.textContent = pub.title;
+                item.appendChild(title);
+
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                const yearEl = document.createElement('strong');
+                yearEl.textContent = pub.year;
+                meta.appendChild(yearEl);
+                meta.appendChild(document.createTextNode(' | ' + (pub.venue || '') + ' | '));
+                const citEl = document.createElement('strong');
+                citEl.textContent = pub.citations;
+                meta.appendChild(citEl);
+                meta.appendChild(document.createTextNode(' citations'));
+                item.appendChild(meta);
+
+                if (pub.url && /^https?:\/\//i.test(pub.url)) {
+                    const link = document.createElement('a');
+                    link.href = pub.url;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.textContent = 'View Publication →';
+                    item.appendChild(link);
+                }
                 pubsEl.appendChild(item);
             });
         }
