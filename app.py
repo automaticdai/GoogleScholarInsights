@@ -2,7 +2,7 @@
 import os
 import json
 import re
-from flask import Flask, render_template, jsonify, send_from_directory
+from flask import Flask, render_template, jsonify
 from scripts.analyze_data import ScholarAnalyzer, load_data
 
 app = Flask(__name__)
@@ -87,12 +87,6 @@ def get_analysis():
         return jsonify({'error': 'Author data file not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    """Serve static files."""
-    return send_from_directory('static', filename)
 
 
 if __name__ == '__main__':
