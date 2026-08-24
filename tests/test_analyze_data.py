@@ -44,3 +44,32 @@ def test_research_areas_capture_acronyms_and_domain_terms():
     assert "system" in areas  # "systems" normalizes to "system"
     assert "learning" in areas
     assert "network" in areas
+
+
+def test_authorship_positions():
+    pubs = [
+        {"bib": {"author": "Xiaotian Dai"}},
+        {"bib": {"author": "Xiaotian Dai and Alan Burns"}},
+        {"bib": {"author": "Alan Burns and Xiaotian Dai"}},
+        {"bib": {"author": "Alan Burns and Xiaotian Dai and Iain Bate"}},
+    ]
+    analyzer = ScholarAnalyzer(make_author(pubs=pubs))
+    assert analyzer.get_authorship_stats() == {
+        "First": 1,
+        "Last": 1,
+        "Middle": 1,
+        "Single": 1,
+    }
+
+
+def test_authorship_word_boundary_prevents_substring_match():
+    # surname "Li" must not match "Alice"
+    pubs = [{"bib": {"author": "Alice Smith and Wei Li"}}]
+    analyzer = ScholarAnalyzer(make_author(name="Wei Li", pubs=pubs))
+    assert analyzer.get_authorship_stats()["Last"] == 1
+
+
+def test_authorship_disambiguates_shared_surname_by_initial():
+    pubs = [{"bib": {"author": "Alice Li and Wei Li"}}]
+    analyzer = ScholarAnalyzer(make_author(name="Wei Li", pubs=pubs))
+    assert analyzer.get_authorship_stats()["Last"] == 1

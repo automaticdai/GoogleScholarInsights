@@ -136,28 +136,42 @@ class ScholarAnalyzer:
     def get_authorship_stats(self) -> Dict[str, int]:
         """Analyzes position in author list."""
         positions = {"First": 0, "Last": 0, "Middle": 0, "Single": 0}
-        
+
         target_parts = self.name.lower().split()
-        target_surname = target_parts[-1] if target_parts else ""
-        
+        if not target_parts:
+            return positions
+
+        surname = target_parts[-1]
+        first_initial = target_parts[0][0]
+
+        # Match the surname as a whole word to avoid false positives such as
+        # "Li" matching "Alice" or "Wei" matching "Weiss".
+        surname_re = re.compile(r'\b' + re.escape(surname) + r'\b')
+
         for pub in self.publications:
             author_str = pub.get('bib', {}).get('author', '')
             if not author_str:
                 continue
-                
+
             # Handle "Name, Other" and "Name and Other"
-            authors = [a.strip() for a in re.split(r',|\sand\s', author_str)]
-            
-            # Find index
-            match_idx = -1
-            for i, a in enumerate(authors):
-                if target_surname in a.lower():
-                    match_idx = i
-                    break
-            
-            if match_idx == -1:
+            authors = [a.strip() for a in re.split(r',|\s+and\s+', author_str) if a.strip()]
+            if not authors:
                 continue
-                
+
+            # All positions where the surname appears as a whole word
+            candidates = [i for i, a in enumerate(authors) if surname_re.search(a.lower())]
+            if not candidates:
+                continue
+
+            # Disambiguate shared surnames using the first-name initial
+            match_idx = candidates[0]
+            if len(candidates) > 1:
+                for i in candidates:
+                    tokens = authors[i].lower().split()
+                    if tokens and tokens[0][0] == first_initial:
+                        match_idx = i
+                        break
+
             if len(authors) == 1:
                 positions["Single"] += 1
             elif match_idx == 0:
@@ -166,7 +180,7 @@ class ScholarAnalyzer:
                 positions["Last"] += 1
             else:
                 positions["Middle"] += 1
-                
+
         return positions
 
     def get_publication_ranks(self, verbose: bool = False) -> Dict[str, int]:
