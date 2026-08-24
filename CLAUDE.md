@@ -30,9 +30,12 @@ python3 app.py
 
 # Run manual test
 python3 scripts/test_fetch.py
+
+# Run test suite
+python3 -m pytest
 ```
 
-No formal test framework, linter, or build system is configured.
+A pytest suite lives in `tests/` (run with `python3 -m pytest`). No linter or build system is configured.
 
 ## Architecture
 
