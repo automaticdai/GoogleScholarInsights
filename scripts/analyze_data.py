@@ -6,10 +6,10 @@ import re
 from typing import Dict, List, Tuple, Any
 
 try:
-    from .ranking_utils import get_venue_rank
+    from .ranking_utils import get_venue_metrics
 except ImportError:
     # Fallback for standalone script usage
-    from ranking_utils import get_venue_rank
+    from ranking_utils import get_venue_metrics
 
 class ScholarAnalyzer:
     """
@@ -222,15 +222,8 @@ class ScholarAnalyzer:
                     print(f"  Rank: No Venue Found")
                 continue
                 
-            rank = get_venue_rank(venue)
-            
-            # Get IF and SJR for journals
-            try:
-                from .ranking_utils import get_venue_metrics
-            except ImportError:
-                from ranking_utils import get_venue_metrics
-            rank_result, impact_factor, sjr = get_venue_metrics(venue)
-            
+            rank, impact_factor, sjr = get_venue_metrics(venue)
+
             if rank in rank_counts:
                 rank_counts[rank] += 1
                 if verbose:

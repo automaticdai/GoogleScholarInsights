@@ -73,3 +73,14 @@ def test_authorship_disambiguates_shared_surname_by_initial():
     pubs = [{"bib": {"author": "Alice Li and Wei Li"}}]
     analyzer = ScholarAnalyzer(make_author(name="Wei Li", pubs=pubs))
     assert analyzer.get_authorship_stats()["Last"] == 1
+
+
+def test_publication_ranks_classify_unknown_and_missing_venue():
+    pubs = [
+        {"bib": {"title": "t1", "venue": "ZZZ totally nonexistent venue 12345"}},
+        {"bib": {"title": "t2", "venue": ""}},
+    ]
+    analyzer = ScholarAnalyzer(make_author(pubs=pubs))
+    ranks = analyzer.get_publication_ranks()
+    assert ranks["Unranked"] == 1
+    assert ranks["No Venue Found"] == 1
