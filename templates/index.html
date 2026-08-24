@@ -481,36 +481,42 @@
 
             // Publications list
             const pubsEl = document.getElementById('publications');
-            data.publications.forEach(pub => {
-                const item = document.createElement('div');
-                item.className = 'publication-item';
+            if (!data.publications || data.publications.length === 0) {
+                const empty = document.createElement('p');
+                empty.textContent = 'No publications found for this author.';
+                pubsEl.appendChild(empty);
+            } else {
+                data.publications.forEach(pub => {
+                    const item = document.createElement('div');
+                    item.className = 'publication-item';
 
-                const title = document.createElement('h3');
-                title.textContent = pub.title;
-                item.appendChild(title);
+                    const title = document.createElement('h3');
+                    title.textContent = pub.title;
+                    item.appendChild(title);
 
-                const meta = document.createElement('div');
-                meta.className = 'meta';
-                const yearEl = document.createElement('strong');
-                yearEl.textContent = pub.year;
-                meta.appendChild(yearEl);
-                meta.appendChild(document.createTextNode(' | ' + (pub.venue || '') + ' | '));
-                const citEl = document.createElement('strong');
-                citEl.textContent = pub.citations;
-                meta.appendChild(citEl);
-                meta.appendChild(document.createTextNode(' citations'));
-                item.appendChild(meta);
+                    const meta = document.createElement('div');
+                    meta.className = 'meta';
+                    const yearEl = document.createElement('strong');
+                    yearEl.textContent = pub.year;
+                    meta.appendChild(yearEl);
+                    meta.appendChild(document.createTextNode(' | ' + (pub.venue || '') + ' | '));
+                    const citEl = document.createElement('strong');
+                    citEl.textContent = pub.citations;
+                    meta.appendChild(citEl);
+                    meta.appendChild(document.createTextNode(' citations'));
+                    item.appendChild(meta);
 
-                if (pub.url && /^https?:\/\//i.test(pub.url)) {
-                    const link = document.createElement('a');
-                    link.href = pub.url;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.textContent = 'View Publication →';
-                    item.appendChild(link);
-                }
-                pubsEl.appendChild(item);
-            });
+                    if (pub.url && /^https?:\/\//i.test(pub.url)) {
+                        const link = document.createElement('a');
+                        link.href = pub.url;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.textContent = 'View Publication →';
+                        item.appendChild(link);
+                    }
+                    pubsEl.appendChild(item);
+                });
+            }
         }
 
         // Load dashboard on page load
