@@ -6,10 +6,10 @@ import re
 from typing import Dict, List, Tuple, Any
 
 try:
-    from .ranking_utils import get_venue_rank
+    from .ranking_utils import get_venue_metrics
 except ImportError:
     # Fallback for standalone script usage
-    from ranking_utils import get_venue_rank
+    from ranking_utils import get_venue_metrics
 
 class ScholarAnalyzer:
     """
@@ -112,9 +112,8 @@ class ScholarAnalyzer:
             List of tuples (keyword, count) sorted by frequency.
         """
         stop_words = {
-            'for', 'and', 'the', 'of', 'in', 'a', 'an', 'to', 'on', 'with', 
-            'using', 'based', 'analysis', 'via', 'study', 'from', 'by', 
-            'network', 'deep', 'learning', 'system', 'systems', 'with',
+            'for', 'and', 'the', 'of', 'in', 'a', 'an', 'to', 'on', 'with',
+            'using', 'based', 'analysis', 'via', 'study', 'from', 'by',
             'toward', 'towards', 'this', 'that', 'these', 'those', 'are',
             'is', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had'
         }
@@ -122,8 +121,9 @@ class ScholarAnalyzer:
         words = []
         for pub in self.publications:
             title = pub.get('bib', {}).get('title', '').lower()
-            # Match words with at least 3 letters, including hyphenated words (e.g., "real-time", "multi-core")
-            tokens = re.findall(r'\b[a-z]+(?:-[a-z]+)*[a-z]{2,}\b', title)
+            # Match words with at least 2 letters (captures acronyms like "ai", "ml"),
+            # including hyphenated words (e.g., "real-time", "multi-core")
+            tokens = re.findall(r'\b[a-z]{2,}(?:-[a-z]+)*\b', title)
             
             for token in tokens:
                 if token not in stop_words:
@@ -136,28 +136,42 @@ class ScholarAnalyzer:
     def get_authorship_stats(self) -> Dict[str, int]:
         """Analyzes position in author list."""
         positions = {"First": 0, "Last": 0, "Middle": 0, "Single": 0}
-        
+
         target_parts = self.name.lower().split()
-        target_surname = target_parts[-1] if target_parts else ""
-        
+        if not target_parts:
+            return positions
+
+        surname = target_parts[-1]
+        first_initial = target_parts[0][0]
+
+        # Match the surname as a whole word to avoid false positives such as
+        # "Li" matching "Alice" or "Wei" matching "Weiss".
+        surname_re = re.compile(r'\b' + re.escape(surname) + r'\b')
+
         for pub in self.publications:
             author_str = pub.get('bib', {}).get('author', '')
             if not author_str:
                 continue
-                
+
             # Handle "Name, Other" and "Name and Other"
-            authors = [a.strip() for a in re.split(r',|\sand\s', author_str)]
-            
-            # Find index
-            match_idx = -1
-            for i, a in enumerate(authors):
-                if target_surname in a.lower():
-                    match_idx = i
-                    break
-            
-            if match_idx == -1:
+            authors = [a.strip() for a in re.split(r',|\s+and\s+', author_str) if a.strip()]
+            if not authors:
                 continue
-                
+
+            # All positions where the surname appears as a whole word
+            candidates = [i for i, a in enumerate(authors) if surname_re.search(a.lower())]
+            if not candidates:
+                continue
+
+            # Disambiguate shared surnames using the first-name initial
+            match_idx = candidates[0]
+            if len(candidates) > 1:
+                for i in candidates:
+                    tokens = authors[i].lower().split()
+                    if tokens and tokens[0][0] == first_initial:
+                        match_idx = i
+                        break
+
             if len(authors) == 1:
                 positions["Single"] += 1
             elif match_idx == 0:
@@ -166,7 +180,7 @@ class ScholarAnalyzer:
                 positions["Last"] += 1
             else:
                 positions["Middle"] += 1
-                
+
         return positions
 
     def get_publication_ranks(self, verbose: bool = False) -> Dict[str, int]:
@@ -208,15 +222,8 @@ class ScholarAnalyzer:
                     print(f"  Rank: No Venue Found")
                 continue
                 
-            rank = get_venue_rank(venue)
-            
-            # Get IF and SJR for journals
-            try:
-                from .ranking_utils import get_venue_metrics
-            except ImportError:
-                from ranking_utils import get_venue_metrics
-            rank_result, impact_factor, sjr = get_venue_metrics(venue)
-            
+            rank, impact_factor, sjr = get_venue_metrics(venue)
+
             if rank in rank_counts:
                 rank_counts[rank] += 1
                 if verbose:

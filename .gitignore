@@ -1,2 +1,8 @@
 __pycache__
 *.pyc
+
+# Virtual environment
+.venv/
+
+# Generated author data (may contain personal/identifying information)
+author_data.json

@@ -115,6 +115,11 @@ python3 app.py
 
 Then open your browser and navigate to `http://localhost:5000`
 
+**Options:**
+- `--data PATH` — path to the author data JSON (default: `author_data.json`; env `SCHOLAR_DATA`).
+- `--host HOST` / `--port PORT` — bind address and port (defaults `0.0.0.0:5000`; env `HOST`/`PORT`).
+- Set `FLASK_DEBUG=1` to enable debug mode (off by default).
+
 **Dashboard Features:**
 - **Profile Overview**: Author name, affiliation, interests, and profile picture
 - **Key Metrics**: Total citations, h-index, i10-index, publication count

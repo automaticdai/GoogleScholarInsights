@@ -1,8 +1,9 @@
 """Flask web application for Google Scholar dashboard."""
-import os
+import argparse
 import json
+import os
 import re
-from flask import Flask, render_template, jsonify, send_from_directory
+from flask import Flask, render_template, jsonify
 from scripts.analyze_data import ScholarAnalyzer, load_data
 
 app = Flask(__name__)
@@ -89,12 +90,17 @@ def get_analysis():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    """Serve static files."""
-    return send_from_directory('static', filename)
-
-
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    parser = argparse.ArgumentParser(description="Run the ScholarInsights dashboard.")
+    parser.add_argument('--data', default=os.environ.get('SCHOLAR_DATA', AUTHOR_DATA_PATH),
+                        help='Path to the author data JSON file (default: author_data.json).')
+    parser.add_argument('--host', default=os.environ.get('HOST', '0.0.0.0'),
+                        help='Host interface to bind (default: 0.0.0.0).')
+    parser.add_argument('--port', type=int, default=int(os.environ.get('PORT', '5000')),
+                        help='Port to listen on (default: 5000).')
+    args = parser.parse_args()
+
+    AUTHOR_DATA_PATH = os.path.abspath(args.data)
+    debug = os.environ.get('FLASK_DEBUG', '').lower() in ('1', 'true', 'yes')
+    app.run(debug=debug, host=args.host, port=args.port)
 

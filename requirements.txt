@@ -2,4 +2,5 @@ flask==3.0.0
 scholarly==1.7.2
 requests==2.31.0
 fake-useragent==1.4.0
+pytest==8.3.5
 

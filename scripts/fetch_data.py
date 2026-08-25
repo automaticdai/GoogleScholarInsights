@@ -199,14 +199,18 @@ def main():
     args = parser.parse_args()
     
     # Override global delay settings if specified
-    global MIN_DELAY_BETWEEN_PUBS, MAX_DELAY_BETWEEN_PUBS
+    global MIN_DELAY_BETWEEN_PUBS, MAX_DELAY_BETWEEN_PUBS, MIN_DELAY_BETWEEN_SEARCHES, MAX_DELAY_BETWEEN_SEARCHES
     if args.no_delay:
         logger.warning("Rate limiting disabled! This may result in IP ban from Google Scholar.")
         MIN_DELAY_BETWEEN_PUBS = 0
         MAX_DELAY_BETWEEN_PUBS = 0
+        MIN_DELAY_BETWEEN_SEARCHES = 0
+        MAX_DELAY_BETWEEN_SEARCHES = 0
     else:
         MIN_DELAY_BETWEEN_PUBS = args.min_delay
         MAX_DELAY_BETWEEN_PUBS = args.max_delay
+        MIN_DELAY_BETWEEN_SEARCHES = args.min_delay
+        MAX_DELAY_BETWEEN_SEARCHES = args.max_delay
         logger.info(f"Rate limiting enabled: {MIN_DELAY_BETWEEN_PUBS:.1f}s - {MAX_DELAY_BETWEEN_PUBS:.1f}s between requests")
     
     setup_proxy()
