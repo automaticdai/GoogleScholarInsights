@@ -6,3 +6,6 @@ __pycache__
 
 # Generated author data (may contain personal/identifying information)
 author_data.json
+
+# Per-author publication cache
+.scholar_cache/
