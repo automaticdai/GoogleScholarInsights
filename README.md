@@ -77,6 +77,32 @@ python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --limit 5 --no-delay
 - `--max-delay SECONDS` - Maximum delay between requests (default: 5.0)
 - `--no-delay` - Disable rate limiting (NOT RECOMMENDED - may cause IP ban)
 
+**Caching**
+
+Publication details are cached per author in `.scholar_cache/<scholar_id>.json`,
+keyed by Scholar's stable `author_pub_id`. Only citation counts change between
+runs, and the author listing already carries those, so a repeat fetch of a
+profile costs one request and no per-publication delays. Each author has its
+own cache file, so alternating between profiles never discards either one.
+
+```bash
+# First fetch of a 35-paper profile: 35 requests, several minutes
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ"
+
+# Same profile again: 1 request, seconds — citation counts still update
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ"
+
+# Force a full refetch (e.g. after a title or venue correction)
+python3 scripts/fetch_data.py --id "G7dzNUkAAAAJ" --refresh
+```
+
+- `--cache-dir DIR` - Where per-author caches live (default: `.scholar_cache`)
+- `--no-cache` - Ignore the cache entirely and do not write to it
+- `--refresh` - Refetch every publication, then rewrite the cache
+
+An interrupted run saves what it already fetched, so pressing Ctrl-C part-way
+through a long fetch does not throw the work away.
+
 
 ### 2. Analyzing Data (`analyze_data.py`)
 Generates a report from the fetched JSON data.
@@ -121,19 +147,19 @@ Then open your browser and navigate to `http://localhost:5000`
 - Set `FLASK_DEBUG=1` to enable debug mode (off by default).
 
 **Dashboard Features:**
-- **Profile Overview**: Author name, affiliation, interests, and profile picture
-- **Key Metrics**: Total citations, h-index, i10-index, publication count
-- **Citation Trends**: Line chart showing citations over time
-- **Publication Rankings**: Doughnut chart of venue rankings (A*, A, B, C)
-- **Authorship Positions**: Bar chart showing First/Middle/Last/Single author positions
-- **Research Keywords**: Horizontal bar chart of top research terms
-- **Top Publications**: List of publications with citations and links
+- **Profile Overview**: Author name, affiliation, research interests, and profile picture
+- **Key Metrics**: Total citations, h-index, i10-index and publication count, each with its five-year figure
+- **Citations per Year** and **Cumulative Citations**: paired charts sharing one x-axis, so the yearly rate and the running total can be read side by side without a second y-scale
+- **Venue Quality**: publications by CORE rank on a single-hue ordinal scale, dark to light, with a table giving exact counts and shares
+- **Authorship Positions**: First/Middle/Last/Single author positions
+- **Research Keywords**: top terms across publication titles
+- **Publications**: the twenty most-cited papers as a numbered bibliography with venues and links
 
 The dashboard automatically loads data from `author_data.json` in the root directory.
 
 ## Configuration
 
-- **Proxies**: `fetch_data.py` attempts to use free proxies. For production use, configure `scholarly` with a paid proxy in `setup_proxy()`.
+- **Proxies**: `fetch_data.py` attempts to use free proxies via `scholarly`'s `FreeProxies()`. Note that with the currently pinned dependencies this fails at startup (`FreeProxy.get_proxy_list() missing 1 required positional argument: 'repeat'`) and the fetch proceeds unproxied — the publication cache, not the proxy, is what keeps request volume down. For heavier use, configure `scholarly` with a paid proxy in `setup_proxy()`.
 - **Rankings**: `ranking_utils.py` loads rankings from `scripts/venue_ranks.json`.
   - To add new venues, simply edit `venue_ranks.json`.
   - Format: `"venue_name_lowercase": "RANK"` (e.g., `"rtss": "A*"`).
@@ -167,6 +193,7 @@ scholarinsights/
 │   ├── fetch_data.py          # Data retrieval script
 │   ├── analyze_data.py        # Analysis and reporting script
 │   ├── ranking_utils.py       # Ranking logic helper
+│   ├── pub_cache.py           # Per-author publication cache
 │   ├── venue_ranks.json      # Venue ranking database
 │   └── test_fetch.py          # Test script
 └── templates/
@@ -178,6 +205,7 @@ scholarinsights/
 - `scripts/fetch_data.py`: Data retrieval script for Google Scholar
 - `scripts/analyze_data.py`: Analysis and reporting script with `ScholarAnalyzer` class
 - `scripts/ranking_utils.py`: Ranking logic helper for venue classification
+- `scripts/pub_cache.py`: Per-author publication cache that removes repeat Scholar requests
 - `scripts/venue_ranks.json`: Database of venue rankings
 - `templates/index.html`: Interactive dashboard frontend with Chart.js visualizations
 - `author_data.json`: Generated author data file (created by `fetch_data.py`)

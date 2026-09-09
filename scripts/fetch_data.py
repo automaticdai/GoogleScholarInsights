@@ -9,6 +9,14 @@ import requests
 from scholarly import scholarly, ProxyGenerator
 from fake_useragent import UserAgent
 
+try:
+    from .pub_cache import (DEFAULT_CACHE_DIR, cache_path_for, load_cache,
+                            resolve_publications, save_cache)
+except ImportError:
+    # Fallback for standalone script usage
+    from pub_cache import (DEFAULT_CACHE_DIR, cache_path_for, load_cache,
+                           resolve_publications, save_cache)
+
 # Logger config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -88,13 +96,21 @@ def safe_fetch_with_retry(fetch_func, *args, max_retries: int = MAX_RETRIES, **k
                 logger.error(f"Fetch failed after {max_retries} attempts: {e}")
                 return None
 
-def fetch_by_id(scholar_id: str, limit: Optional[int] = None) -> Optional[Dict[str, Any]]:
+def fetch_by_id(scholar_id: str, limit: Optional[int] = None,
+                cache_dir: str = DEFAULT_CACHE_DIR, use_cache: bool = True,
+                refresh: bool = False) -> Optional[Dict[str, Any]]:
     """Fetches author data by Scholar ID.
-    
+
+    Publication details already held in this author's cache are reused, so a
+    repeat fetch costs one request for the listing and nothing per paper.
+
     Args:
         scholar_id: Google Scholar ID of the author.
         limit: Maximum number of publications to fetch full details for.
-    
+        cache_dir: Directory holding the per-author publication caches.
+        use_cache: Whether to read from and write to the cache at all.
+        refresh: Refetch every publication, ignoring cache hits.
+
     Returns:
         Dictionary containing author data, or None if fetch failed.
     """
@@ -112,35 +128,33 @@ def fetch_by_id(scholar_id: str, limit: Optional[int] = None) -> Optional[Dict[s
             pubs_to_process = pubs_to_process[:limit]
             logger.info(f"Limiting detailed fetch to first {limit} publications.")
             
-        full_pubs = []
-        total_pubs = len(pubs_to_process)
-        start_time = time.time()
-        
-        for i, pub in enumerate(pubs_to_process, 1):
-            title = pub.get('bib', {}).get('title', 'Unknown')
-            logger.info(f"Fetching details for publication {i}/{total_pubs}: {title[:60]}...")
-            
-            # Fetch with retry logic
-            full_pub = safe_fetch_with_retry(scholarly.fill, pub)
-            if full_pub:
-                full_pubs.append(full_pub)
-            else:
-                logger.warning(f"Using partial data for publication {i}")
-                full_pubs.append(pub)
-            
-            # Rate limiting: add delay between fetches (except after last one)
-            if i < total_pubs:
-                delay = random.uniform(MIN_DELAY_BETWEEN_PUBS, MAX_DELAY_BETWEEN_PUBS)
-                
-                # Calculate and display progress
-                elapsed = time.time() - start_time
-                avg_time_per_pub = elapsed / i
-                remaining_pubs = total_pubs - i
-                estimated_remaining = avg_time_per_pub * remaining_pubs + delay * remaining_pubs
-                
-                logger.info(f"Waiting {delay:.1f}s before next fetch... "
-                          f"(~{estimated_remaining/60:.1f} min remaining)")
-                time.sleep(delay)
+        cache_path = cache_path_for(scholar_id, cache_dir) if use_cache else None
+        entries = load_cache(cache_path) if cache_path else {}
+        if entries:
+            logger.info(f"Loaded {len(entries)} cached publications from {cache_path}")
+
+        def wait():
+            delay = random.uniform(MIN_DELAY_BETWEEN_PUBS, MAX_DELAY_BETWEEN_PUBS)
+            logger.info(f"Waiting {delay:.1f}s before next fetch...")
+            time.sleep(delay)
+
+        def fetch_one(stub):
+            return safe_fetch_with_retry(scholarly.fill, stub)
+
+        try:
+            full_pubs, entries = resolve_publications(
+                pubs_to_process, entries, fetch_one, wait, refresh=refresh)
+        except KeyboardInterrupt:
+            # Keep the work already paid for; a long run is expensive to redo.
+            if cache_path:
+                save_cache(cache_path, entries, scholar_id=scholar_id)
+                logger.info(f"Interrupted — saved {len(entries)} publications "
+                            f"to {cache_path}")
+            raise
+
+        if cache_path:
+            save_cache(cache_path, entries, scholar_id=scholar_id)
+            logger.info(f"Cached {len(entries)} publications in {cache_path}")
 
         author['publications'] = full_pubs
         return author
@@ -195,7 +209,16 @@ def main():
                        help="Maximum delay between requests in seconds (default: 5.0).")
     parser.add_argument("--no-delay", action="store_true",
                        help="Disable rate limiting delays (NOT RECOMMENDED - may cause IP ban).")
-    
+
+    # Caching arguments
+    parser.add_argument("--cache-dir", type=str, default=DEFAULT_CACHE_DIR,
+                       help=f"Directory for per-author publication caches "
+                            f"(default: {DEFAULT_CACHE_DIR}).")
+    parser.add_argument("--no-cache", action="store_true",
+                       help="Ignore the cache entirely and do not write to it.")
+    parser.add_argument("--refresh", action="store_true",
+                       help="Refetch every publication, then rewrite the cache.")
+
     args = parser.parse_args()
     
     # Override global delay settings if specified
@@ -215,8 +238,14 @@ def main():
     
     setup_proxy()
     
+    cache_kwargs = {
+        "cache_dir": args.cache_dir,
+        "use_cache": not args.no_cache,
+        "refresh": args.refresh,
+    }
+
     if args.id:
-        data = fetch_by_id(args.id, args.limit)
+        data = fetch_by_id(args.id, args.limit, **cache_kwargs)
     else:
         # Search mode
         candidates = search_candidates(args.author)
@@ -226,7 +255,7 @@ def main():
             
         if len(candidates) == 1:
             logger.info("Single match found. Fetching data...")
-            data = fetch_by_id(candidates[0]['scholar_id'], args.limit)
+            data = fetch_by_id(candidates[0]['scholar_id'], args.limit, **cache_kwargs)
         else:
             print(f"\nMultiple candidates found for '{args.author}':")
             for i, c in enumerate(candidates, 1):
