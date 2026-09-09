@@ -3,525 +3,918 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Scholar Dashboard</title>
+    <title>ScholarInsights</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            /* Surfaces — printed page, near-neutral, deliberately not cream */
+            --paper:        #fcfcfb;
+            --paper-inset:  #f4f4f1;
+            --rule:         #dedfe3;
+            --rule-strong:  #16213a;
+
+            /* Ink — a blue-black, the way fountain-pen ink sits on paper */
+            --ink:          #16213a;
+            --ink-2:        #54596b;
+            --ink-3:        #787d8c;
+
+            /* One accent, drawn from the same hue as the rank ramp */
+            --accent:       #27395f;
+            --accent-wash:  rgba(39, 57, 95, 0.09);
+
+            /* Ordinal venue ramp — one hue, monotone lightness.
+               Validated: monotone L, ΔL ≥ 0.06, light end 2.07:1 on --paper. */
+            --rank-1:       #141f38;
+            --rank-2:       #27395f;
+            --rank-3:       #3e5484;
+            --rank-4:       #5c76a5;
+            --rank-5:       #8094bd;
+            --rank-6:       #a3b3ce;
+
+            --grid:         #e8e8e6;
+
+            --serif: 'Palatino Linotype', 'Book Antiqua', Palatino, 'P052',
+                     'URW Palladio L', Georgia, serif;
+            --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                    'Helvetica Neue', Arial, sans-serif;
         }
+
+        *, *::before, *::after { box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            margin: 0;
+            padding: 0 24px 96px;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .sheet { max-width: 1180px; margin: 0 auto; }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; text-underline-offset: 2px; }
+        a:focus-visible,
+        .bib li a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 1px;
         }
 
-        .header {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 30px;
+        /* ---------- Masthead ---------- */
+
+        .masthead {
+            display: grid;
+            grid-template-columns: 96px 1fr;
+            gap: 32px;
+            align-items: start;
+            padding: 72px 0 36px;
         }
 
-        .profile-img {
-            width: 120px;
-            height: 120px;
+        .portrait {
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #667eea;
+            border: 1px solid var(--rule);
+            background: var(--paper-inset);
+        }
+        .portrait[hidden] { display: none; }
+
+        .author {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+            line-height: 1.02;
+            letter-spacing: -0.015em;
+            margin: -0.12em 0 0.28em;
         }
 
-        .header-info h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            color: #2d3748;
+        .affiliation {
+            font-family: var(--serif);
+            font-size: 1.1875rem;
+            line-height: 1.45;
+            color: var(--ink-2);
+            margin: 0 0 0.7em;
+            max-width: 46ch;
         }
 
-        .header-info p {
-            color: #718096;
-            font-size: 1.1em;
-            margin: 5px 0;
+        /* Run-in keywords line, set the way a paper sets its own */
+        .keywords {
+            font-family: var(--serif);
+            font-size: 1.0625rem;
+            line-height: 1.55;
+            color: var(--ink-2);
+            margin: 0 0 0.55em;
+            max-width: 62ch;
         }
+        .keywords em { color: var(--ink); font-style: italic; }
+        .keywords[hidden] { display: none; }
 
-        .header-info a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .header-info a:hover {
-            text-decoration: underline;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card h3 {
-            color: #718096;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .chart-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .chart-card h2 {
-            margin-bottom: 20px;
-            color: #2d3748;
-            font-size: 1.5em;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
-
-        .interests {
+        .contact {
+            font-size: 0.875rem;
+            color: var(--ink-3);
+            margin: 0;
             display: flex;
             flex-wrap: wrap;
+            gap: 4px 28px;
+        }
+
+        /* Journal-masthead double rule */
+        .double-rule {
+            border: 0;
+            border-top: 3px solid var(--rule-strong);
+            border-bottom: 1px solid var(--rule-strong);
+            height: 4px;
+            margin: 0;
+        }
+
+        /* ---------- Metrics band ---------- */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .metric { padding: 26px 28px 30px; }
+        .metric + .metric { border-left: 1px solid var(--rule); }
+
+        .figure {
+            /* Sans, proportional figures — a serif here would read as decoration */
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 400;
+            font-variant-numeric: proportional-nums;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin: 0 0 0.3em;
+        }
+
+        .metric-label {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 1.0625rem;
+            color: var(--ink-2);
+            margin: 0;
+        }
+
+        .metric-sub {
+            font-size: 0.8125rem;
+            color: var(--ink-3);
+            font-variant-numeric: tabular-nums;
+            margin: 6px 0 0;
+        }
+        .metric-sub[hidden] { display: none; }
+
+        /* ---------- Panels ---------- */
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            border-bottom: 1px solid var(--rule);
+        }
+        .row-single { grid-template-columns: 1fr; }
+
+        .panel { margin: 0; padding: 34px 28px 38px; min-width: 0; }
+        .panel + .panel { border-left: 1px solid var(--rule); }
+
+        .panel h2 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: 1.3125rem;
+            letter-spacing: -0.005em;
+            margin: 0 0 4px;
+        }
+
+        .panel-note {
+            font-size: 0.8125rem;
+            color: var(--ink-3);
+            margin: 0 0 22px;
+        }
+
+        .plot { position: relative; height: 300px; }
+        .plot-tall { height: 400px; }
+        .plot-band { height: 76px; }
+
+        /* ---------- Venue rank key (legend and table view in one) ---------- */
+
+        .rank-key {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            font-size: 0.9375rem;
+        }
+        .rank-key th {
+            font-weight: 400;
+            font-size: 0.8125rem;
+            color: var(--ink-3);
+            text-align: right;
+            padding: 0 0 6px;
+            border-bottom: 1px solid var(--rule);
+        }
+        .rank-key th:first-child { text-align: left; }
+        .rank-key td {
+            padding: 7px 0;
+            border-bottom: 1px solid var(--rule);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink-2);
+        }
+        .rank-key td:first-child {
+            text-align: left;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
             gap: 10px;
-            margin-top: 10px;
+        }
+        .rank-key tr:last-child td { border-bottom: 0; }
+
+        .swatch {
+            width: 11px;
+            height: 11px;
+            border-radius: 2px;
+            flex: 0 0 auto;
         }
 
-        .interest-tag {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
+        /* ---------- Bibliography ---------- */
+
+        .bib-section { padding: 38px 28px 0; }
+
+        .bib-section h2 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: 1.75rem;
+            margin: 0 0 4px;
         }
 
-        .publications-list {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        .bib-head {
+            display: grid;
+            grid-template-columns: 3.25rem 1fr 6rem;
+            gap: 0 20px;
+            font-size: 0.8125rem;
+            color: var(--ink-3);
+            padding: 22px 0 8px;
+            border-bottom: 1px solid var(--rule-strong);
+        }
+        .bib-head span:last-child { text-align: right; }
+
+        .bib {
+            list-style: none;
+            counter-reset: ref;
+            margin: 0;
+            padding: 0;
         }
 
-        .publications-list h2 {
-            margin-bottom: 20px;
-            color: #2d3748;
+        .bib li {
+            counter-increment: ref;
+            display: grid;
+            grid-template-columns: 3.25rem 1fr 6rem;
+            gap: 0 20px;
+            padding: 16px 8px 16px 0;
+            margin: 0 -8px 0 0;
+            border-bottom: 1px solid var(--rule);
+            align-items: baseline;
+        }
+        .bib li:hover { background: var(--paper-inset); }
+
+        .bib li::before {
+            content: "[" counter(ref) "]";
+            font-size: 0.875rem;
+            color: var(--ink-3);
+            font-variant-numeric: tabular-nums;
         }
 
-        .publication-item {
-            padding: 15px;
-            border-left: 4px solid #667eea;
-            margin-bottom: 15px;
-            background: #f7fafc;
-            border-radius: 5px;
+        .pub-title {
+            font-family: var(--serif);
+            font-size: 1.125rem;
+            line-height: 1.4;
+            color: var(--ink);
+            display: block;
+            max-width: 68ch;
+        }
+        a.pub-title:hover { color: var(--accent); }
+
+        .pub-meta {
+            font-size: 0.875rem;
+            color: var(--ink-3);
+            margin: 5px 0 0;
+            max-width: 68ch;
+        }
+        .pub-meta em { font-family: var(--serif); font-size: 0.9375rem; }
+
+        .pub-cites {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink-2);
         }
 
-        .publication-item h3 {
-            color: #2d3748;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+        .bib-empty {
+            padding: 28px 0;
+            color: var(--ink-2);
+            font-family: var(--serif);
+            font-size: 1.0625rem;
         }
 
-        .publication-item .meta {
-            color: #718096;
-            font-size: 0.9em;
-            margin: 5px 0;
-        }
-
-        .publication-item a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .publication-item a:hover {
-            text-decoration: underline;
-        }
+        /* ---------- States ---------- */
 
         .loading {
-            text-align: center;
-            padding: 50px;
-            color: white;
-            font-size: 1.5em;
+            padding: 120px 0;
+            font-family: var(--serif);
+            font-size: 1.25rem;
+            color: var(--ink-3);
         }
 
         .error {
-            background: #fed7d7;
-            color: #c53030;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+            margin: 96px 0;
+            padding: 24px 28px;
+            border: 1px solid var(--rule);
+            border-left: 3px solid var(--rank-1);
+            background: var(--paper-inset);
+            max-width: 60ch;
+        }
+        .error h2 {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: 1.25rem;
+            margin: 0 0 8px;
+        }
+        .error p { margin: 0; color: var(--ink-2); font-size: 0.9375rem; }
+
+        /* ---------- Responsive ---------- */
+
+        @media (max-width: 900px) {
+            .row { grid-template-columns: 1fr; }
+            .panel + .panel {
+                border-left: 0;
+                border-top: 1px solid var(--rule);
+            }
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 0 18px 64px; }
+            .masthead {
+                grid-template-columns: 1fr;
+                gap: 22px;
+                padding: 44px 0 28px;
+            }
+            .metrics { grid-template-columns: repeat(2, 1fr); }
+            .metric { padding: 20px; }
+            .metric:nth-child(odd) { border-left: 0; }
+            .metric:nth-child(n+3) { border-top: 1px solid var(--rule); }
+            .panel, .bib-section { padding-left: 0; padding-right: 0; }
+            .bib-head, .bib li {
+                grid-template-columns: 2.5rem 1fr;
+                gap: 0 14px;
+            }
+            .bib-head span:last-child { display: none; }
+            .pub-cites {
+                grid-column: 2;
+                text-align: left;
+                font-size: 0.875rem;
+                margin-top: 6px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="loading" class="loading">Loading dashboard...</div>
-        <div id="content" style="display: none;">
-            <div class="header">
-                <img id="profile-img" class="profile-img" src="" alt="Profile">
-                <div class="header-info">
-                    <h1 id="author-name"></h1>
-                    <p id="affiliation"></p>
-                    <p id="email"></p>
-                    <p id="homepage"></p>
-                    <div class="interests" id="interests"></div>
-                </div>
+<div class="sheet">
+    <div id="loading" class="loading">Loading profile…</div>
+
+    <main id="content" hidden>
+        <header class="masthead">
+            <img id="portrait" class="portrait" alt="" hidden>
+            <div>
+                <h1 id="author-name" class="author"></h1>
+                <p id="affiliation" class="affiliation"></p>
+                <p id="keywords" class="keywords" hidden></p>
+                <p id="contact" class="contact"></p>
             </div>
+        </header>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Citations</h3>
-                    <div class="value" id="total-citations"></div>
-                </div>
-                <div class="stat-card">
-                    <h3>H-Index</h3>
-                    <div class="value" id="h-index"></div>
-                </div>
-                <div class="stat-card">
-                    <h3>i10-Index</h3>
-                    <div class="value" id="i10-index"></div>
-                </div>
-                <div class="stat-card">
-                    <h3>Publications</h3>
-                    <div class="value" id="publication-count"></div>
-                </div>
+        <hr class="double-rule">
+
+        <section class="metrics">
+            <div class="metric">
+                <p class="figure" id="total-citations"></p>
+                <p class="metric-label">Citations</p>
+                <p class="metric-sub" id="citations-5y" hidden></p>
             </div>
-
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h2>Overall Citations</h2>
-                    <div class="chart-container">
-                        <canvas id="cumulative-citation-chart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h2>Citation Trends</h2>
-                    <div class="chart-container">
-                        <canvas id="citation-chart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h2>Publication Rankings</h2>
-                    <div class="chart-container">
-                        <canvas id="ranking-chart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h2>Authorship Positions</h2>
-                    <div class="chart-container">
-                        <canvas id="authorship-chart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h2>Research Keywords</h2>
-                    <div class="chart-container">
-                        <canvas id="keywords-chart"></canvas>
-                    </div>
-                </div>
+            <div class="metric">
+                <p class="figure" id="h-index"></p>
+                <p class="metric-label">h-index</p>
+                <p class="metric-sub" id="h-index-5y" hidden></p>
             </div>
-
-            <div class="publications-list">
-                <h2>Top Publications</h2>
-                <div id="publications"></div>
+            <div class="metric">
+                <p class="figure" id="i10-index"></p>
+                <p class="metric-label">i10-index</p>
+                <p class="metric-sub" id="i10-index-5y" hidden></p>
             </div>
-        </div>
-    </div>
+            <div class="metric">
+                <p class="figure" id="publication-count"></p>
+                <p class="metric-label">Publications</p>
+            </div>
+        </section>
 
-    <script>
-        let charts = {};
+        <section class="row">
+            <figure class="panel">
+                <h2>Citations per year</h2>
+                <p class="panel-note">How often the work was cited in each year.</p>
+                <div class="plot"><canvas id="per-year-chart"></canvas></div>
+            </figure>
+            <figure class="panel">
+                <h2>Cumulative citations</h2>
+                <p class="panel-note">The same counts, accumulated over the record.</p>
+                <div class="plot"><canvas id="cumulative-chart"></canvas></div>
+            </figure>
+        </section>
 
-        async function loadDashboard() {
-            try {
-                const response = await fetch('/api/analysis');
-                if (!response.ok) {
-                    throw new Error('Failed to load data');
-                }
-                const data = await response.json();
-                renderDashboard(data);
-            } catch (error) {
-                document.getElementById('loading').innerHTML = 
-                    `<div class="error">Error loading dashboard: ${error.message}</div>`;
+        <section class="row">
+            <figure class="panel">
+                <h2>Venue quality</h2>
+                <p class="panel-note">Publications by CORE rank of the venue.</p>
+                <div class="plot plot-band"><canvas id="venue-chart"></canvas></div>
+                <table class="rank-key">
+                    <thead>
+                        <tr><th scope="col">Rank</th><th scope="col">Papers</th><th scope="col">Share</th></tr>
+                    </thead>
+                    <tbody id="rank-key-body"></tbody>
+                </table>
+            </figure>
+            <figure class="panel">
+                <h2>Authorship position</h2>
+                <p class="panel-note">Where the author sits in the byline.</p>
+                <div class="plot"><canvas id="authorship-chart"></canvas></div>
+            </figure>
+        </section>
+
+        <section class="row row-single">
+            <figure class="panel">
+                <h2>Research keywords</h2>
+                <p class="panel-note">Most frequent terms across publication titles.</p>
+                <div class="plot plot-tall"><canvas id="keywords-chart"></canvas></div>
+            </figure>
+        </section>
+
+        <section class="bib-section">
+            <h2>Publications</h2>
+            <p class="panel-note">The twenty most-cited papers in this profile.</p>
+            <div class="bib-head">
+                <span></span><span>Title and venue</span><span>Citations</span>
+            </div>
+            <ol class="bib" id="publications"></ol>
+            <p class="bib-empty" id="publications-empty" hidden>
+                No publications in this profile yet. Run
+                <code>scripts/fetch_data.py</code> to populate
+                <code>author_data.json</code>, then reload.
+            </p>
+        </section>
+    </main>
+</div>
+
+<script>
+    const charts = {};
+    const css = getComputedStyle(document.documentElement);
+    const token = name => css.getPropertyValue(name).trim();
+
+    const palette = {
+        paper: token('--paper'),
+        ink: token('--ink'),
+        ink2: token('--ink-2'),
+        ink3: token('--ink-3'),
+        rule: token('--rule'),
+        grid: token('--grid'),
+        accent: token('--accent'),
+        accentWash: token('--accent-wash'),
+        ramp: [1, 2, 3, 4, 5, 6].map(i => token('--rank-' + i))
+    };
+
+    Chart.defaults.font.family = token('--sans') ||
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = palette.ink3;
+
+    const axis = {
+        grid: { color: palette.grid, drawTicks: false, drawBorder: false },
+        border: { display: false },
+        ticks: { padding: 10, color: palette.ink3 }
+    };
+    const axisBare = {
+        grid: { display: false, drawBorder: false },
+        border: { display: false },
+        ticks: { padding: 10, color: palette.ink3 }
+    };
+
+    const tooltip = {
+        backgroundColor: palette.ink,
+        titleColor: palette.paper,
+        bodyColor: palette.paper,
+        titleFont: { size: 12, weight: '600' },
+        bodyFont: { size: 12 },
+        padding: 10,
+        cornerRadius: 3,
+        displayColors: false
+    };
+
+    async function loadDashboard() {
+        try {
+            const response = await fetch('/api/analysis');
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload.error || `The server returned ${response.status}.`);
             }
+            renderDashboard(payload);
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+
+    function showError(detail) {
+        const box = document.getElementById('loading');
+        box.className = 'error';
+        box.textContent = '';
+
+        const heading = document.createElement('h2');
+        heading.textContent = 'The profile did not load';
+        box.appendChild(heading);
+
+        const body = document.createElement('p');
+        body.textContent = detail +
+            ' Check that author_data.json exists in the project root, then reload.';
+        box.appendChild(body);
+    }
+
+    function renderDashboard(data) {
+        document.getElementById('loading').hidden = true;
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').hidden = false;
+
+        renderMasthead(data);
+        renderMetrics(data);
+        renderCitationCharts(data);
+        renderVenues(data);
+        renderAuthorship(data);
+        renderKeywords(data);
+        renderPublications(data);
+    }
+
+    /* ---------- Masthead ---------- */
+
+    function renderMasthead(data) {
+        document.title = data.name ? `${data.name} — ScholarInsights` : 'ScholarInsights';
+        document.getElementById('author-name').textContent = data.name || 'Unknown author';
+        document.getElementById('affiliation').textContent = data.affiliation || 'Affiliation unknown';
+
+        if (data.url_picture) {
+            const portrait = document.getElementById('portrait');
+            portrait.src = data.url_picture;
+            portrait.alt = data.name ? `Portrait of ${data.name}` : '';
+            portrait.hidden = false;
         }
 
-        function renderDashboard(data) {
-            // Hide loading, show content
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
+        if (data.interests && data.interests.length) {
+            const el = document.getElementById('keywords');
+            const lead = document.createElement('em');
+            lead.textContent = 'Research interests ';
+            el.appendChild(lead);
+            el.appendChild(document.createTextNode(data.interests.join(', ')));
+            el.hidden = false;
+        }
 
-            // Header info
-            document.getElementById('author-name').textContent = data.name;
-            document.getElementById('affiliation').textContent = data.affiliation || 'Unknown';
-            if (data.email_domain) {
-                document.getElementById('email').textContent = `Email: ${data.email_domain}`;
-            }
-            if (data.homepage) {
-                const homepageEl = document.getElementById('homepage');
-                if (/^https?:\/\//i.test(data.homepage)) {
-                    const link = document.createElement('a');
-                    link.href = data.homepage;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.textContent = data.homepage;
-                    homepageEl.appendChild(link);
-                } else {
-                    homepageEl.textContent = data.homepage;
-                }
-            }
-            if (data.url_picture) {
-                document.getElementById('profile-img').src = data.url_picture;
-            }
-
-            // Interests
-            const interestsEl = document.getElementById('interests');
-            if (data.interests && data.interests.length > 0) {
-                data.interests.forEach(interest => {
-                    const tag = document.createElement('span');
-                    tag.className = 'interest-tag';
-                    tag.textContent = interest;
-                    interestsEl.appendChild(tag);
-                });
-            }
-
-            // Stats
-            document.getElementById('total-citations').textContent = data.total_citations.toLocaleString();
-            document.getElementById('h-index').textContent = data.h_index;
-            document.getElementById('i10-index').textContent = data.i10_index;
-            document.getElementById('publication-count').textContent = data.total_publications || data.publications.length;
-
-            // Citation trends chart
-            const citationData = data.citation_metrics.trends;
-            charts.citation = new Chart(document.getElementById('citation-chart'), {
-                type: 'line',
-                data: {
-                    labels: citationData.map(d => d[0]),
-                    datasets: [{
-                        label: 'Citations',
-                        data: citationData.map(d => d[1]),
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            // Cumulative citation chart
-            let cumulative = 0;
-            const cumulativeData = citationData.map(d => {
-                cumulative += d[1];
-                return cumulative;
-            });
-            charts.cumulativeCitation = new Chart(document.getElementById('cumulative-citation-chart'), {
-                type: 'line',
-                data: {
-                    labels: citationData.map(d => d[0]),
-                    datasets: [{
-                        label: 'Cumulative Citations',
-                        data: cumulativeData,
-                        borderColor: '#764ba2',
-                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            // Publication rankings chart
-            // Use ordered data to preserve rank_counts order (A*, A, B, C, Unranked, No Venue Found)
-            const rankOrder = ["A*", "A", "B", "C", "Unranked", "No Venue Found"];
-            const rankData = data.publication_ranks;
-            
-            // Filter and order by rank_counts order
-            const orderedRanks = rankOrder
-                .filter(rank => rankData[rank] > 0)
-                .map(rank => ({ rank: rank, count: rankData[rank] }));
-            
-            // Jet colormap mapping: A* (best) = red, descending to blue
-            // Full jet spectrum: dark blue -> blue -> cyan -> yellow -> orange -> red
-            const rankColorMap = {
-                "A*": "#FF0000",           // Red (highest quality)
-                "A": "#FF8000",            // Orange
-                "B": "#FFFF00",            // Yellow
-                "C": "#00FFFF",            // Cyan
-                "Unranked": "#0000FF",      // Blue
-                "No Venue Found": "#000080" // Dark blue (lowest)
-            };
-            
-            charts.ranking = new Chart(document.getElementById('ranking-chart'), {
-                type: 'doughnut',
-                data: {
-                    labels: orderedRanks.map(r => r.rank),
-                    datasets: [{
-                        data: orderedRanks.map(r => r.count),
-                        backgroundColor: orderedRanks.map(r => rankColorMap[r.rank])
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
-
-            // Authorship positions chart
-            const authData = data.authorship_stats;
-            charts.authorship = new Chart(document.getElementById('authorship-chart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(authData),
-                    datasets: [{
-                        label: 'Publications',
-                        data: Object.values(authData),
-                        backgroundColor: '#667eea'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            // Research keywords chart
-            const keywordData = data.research_areas.slice(0, 10);
-            charts.keywords = new Chart(document.getElementById('keywords-chart'), {
-                type: 'bar',
-                data: {
-                    labels: keywordData.map(d => d.term),
-                    datasets: [{
-                        label: 'Frequency',
-                        data: keywordData.map(d => d.count),
-                        backgroundColor: '#764ba2'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: { beginAtZero: true }
-                    }
-                }
-            });
-
-            // Publications list
-            const pubsEl = document.getElementById('publications');
-            if (!data.publications || data.publications.length === 0) {
-                const empty = document.createElement('p');
-                empty.textContent = 'No publications found for this author.';
-                pubsEl.appendChild(empty);
+        const contact = document.getElementById('contact');
+        if (data.homepage) {
+            if (/^https?:\/\//i.test(data.homepage)) {
+                const link = document.createElement('a');
+                link.href = data.homepage;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = data.homepage.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+                contact.appendChild(link);
             } else {
-                data.publications.forEach(pub => {
-                    const item = document.createElement('div');
-                    item.className = 'publication-item';
-
-                    const title = document.createElement('h3');
-                    title.textContent = pub.title;
-                    item.appendChild(title);
-
-                    const meta = document.createElement('div');
-                    meta.className = 'meta';
-                    const yearEl = document.createElement('strong');
-                    yearEl.textContent = pub.year;
-                    meta.appendChild(yearEl);
-                    meta.appendChild(document.createTextNode(' | ' + (pub.venue || '') + ' | '));
-                    const citEl = document.createElement('strong');
-                    citEl.textContent = pub.citations;
-                    meta.appendChild(citEl);
-                    meta.appendChild(document.createTextNode(' citations'));
-                    item.appendChild(meta);
-
-                    if (pub.url && /^https?:\/\//i.test(pub.url)) {
-                        const link = document.createElement('a');
-                        link.href = pub.url;
-                        link.target = '_blank';
-                        link.rel = 'noopener noreferrer';
-                        link.textContent = 'View Publication →';
-                        item.appendChild(link);
-                    }
-                    pubsEl.appendChild(item);
-                });
+                const span = document.createElement('span');
+                span.textContent = data.homepage;
+                contact.appendChild(span);
             }
         }
+        if (data.email_domain) {
+            const span = document.createElement('span');
+            span.textContent = `Verified email at ${data.email_domain.replace(/^@/, '')}`;
+            contact.appendChild(span);
+        }
+    }
 
-        // Load dashboard on page load
-        loadDashboard();
-    </script>
+    /* ---------- Metrics ---------- */
+
+    function renderMetrics(data) {
+        const set = (id, value) => {
+            document.getElementById(id).textContent = Number(value || 0).toLocaleString();
+        };
+        set('total-citations', data.total_citations);
+        set('h-index', data.h_index);
+        set('i10-index', data.i10_index);
+        set('publication-count', data.total_publications || (data.publications || []).length);
+
+        const sub = (id, value) => {
+            if (!value) return;
+            const el = document.getElementById(id);
+            el.textContent = `${Number(value).toLocaleString()} in five years`;
+            el.hidden = false;
+        };
+        sub('citations-5y', data.total_citations_5y);
+        sub('h-index-5y', data.h_index_5y);
+        sub('i10-index-5y', data.i10_index_5y);
+    }
+
+    /* ---------- Citations (small multiples, one y-axis each) ---------- */
+
+    function renderCitationCharts(data) {
+        const trends = (data.citation_metrics && data.citation_metrics.trends) || [];
+        const years = trends.map(d => d[0]);
+        const counts = trends.map(d => d[1]);
+
+        let running = 0;
+        const cumulative = counts.map(n => (running += n));
+
+        const perYearCanvas = document.getElementById('per-year-chart');
+        perYearCanvas.setAttribute('role', 'img');
+        perYearCanvas.setAttribute('aria-label',
+            `Citations per year from ${years[0] || 'n/a'} to ${years[years.length - 1] || 'n/a'}, ` +
+            `peaking at ${Math.max(0, ...counts)}.`);
+
+        charts.perYear = new Chart(perYearCanvas, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Citations',
+                    data: counts,
+                    backgroundColor: palette.accent,
+                    borderRadius: 4,
+                    borderSkipped: 'bottom',
+                    maxBarThickness: 34
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip },
+                scales: { x: axisBare, y: { ...axis, beginAtZero: true } }
+            }
+        });
+
+        const cumulativeCanvas = document.getElementById('cumulative-chart');
+        cumulativeCanvas.setAttribute('role', 'img');
+        cumulativeCanvas.setAttribute('aria-label',
+            `Cumulative citations reaching ${cumulative[cumulative.length - 1] || 0}.`);
+
+        charts.cumulative = new Chart(cumulativeCanvas, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Cumulative citations',
+                    data: cumulative,
+                    borderColor: palette.accent,
+                    backgroundColor: palette.accentWash,
+                    borderWidth: 2,
+                    tension: 0.25,
+                    fill: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: palette.accent,
+                    pointHoverBorderColor: palette.paper,
+                    pointHoverBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip },
+                scales: { x: axisBare, y: { ...axis, beginAtZero: true } }
+            }
+        });
+    }
+
+    /* ---------- Venue quality: ordinal ramp, keyed by a table ---------- */
+
+    const RANK_ORDER = ['A*', 'A', 'B', 'C', 'Unranked', 'No Venue Found'];
+
+    function renderVenues(data) {
+        const ranks = data.publication_ranks || {};
+        const present = RANK_ORDER
+            .map((rank, i) => ({ rank, count: ranks[rank] || 0, color: palette.ramp[i] }))
+            .filter(r => r.count > 0);
+
+        const total = present.reduce((sum, r) => sum + r.count, 0);
+        const body = document.getElementById('rank-key-body');
+
+        if (!total) {
+            const row = document.createElement('tr');
+            const cell = document.createElement('td');
+            cell.colSpan = 3;
+            cell.textContent = 'No venues matched the ranking database.';
+            row.appendChild(cell);
+            body.appendChild(row);
+            return;
+        }
+
+        const canvas = document.getElementById('venue-chart');
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label',
+            'Share of publications by venue rank: ' +
+            present.map(r => `${r.rank} ${r.count}`).join(', ') + '.');
+
+        charts.venue = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: ['Venues'],
+                datasets: present.map(r => ({
+                    label: r.rank,
+                    data: [r.count],
+                    backgroundColor: r.color,
+                    /* A 2px gap in the surface colour, not a border around the mark */
+                    borderColor: palette.paper,
+                    borderWidth: 2,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }))
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { top: 4, bottom: 4 } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        ...tooltip,
+                        callbacks: {
+                            title: items => items[0].dataset.label,
+                            label: item => {
+                                const n = item.parsed.x;
+                                return `${n} of ${total} papers (${Math.round((n / total) * 100)}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { stacked: true, display: false, grid: { display: false } },
+                    y: { stacked: true, display: false, grid: { display: false } }
+                }
+            }
+        });
+
+        present.forEach(r => {
+            const row = document.createElement('tr');
+
+            const name = document.createElement('td');
+            const swatch = document.createElement('span');
+            swatch.className = 'swatch';
+            swatch.style.background = r.color;
+            name.appendChild(swatch);
+            name.appendChild(document.createTextNode(r.rank));
+            row.appendChild(name);
+
+            const count = document.createElement('td');
+            count.textContent = r.count;
+            row.appendChild(count);
+
+            const share = document.createElement('td');
+            share.textContent = `${Math.round((r.count / total) * 100)}%`;
+            row.appendChild(share);
+
+            body.appendChild(row);
+        });
+    }
+
+    /* ---------- Authorship ---------- */
+
+    function renderAuthorship(data) {
+        const stats = data.authorship_stats || {};
+        const labels = Object.keys(stats);
+        const values = labels.map(k => stats[k]);
+
+        const canvas = document.getElementById('authorship-chart');
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label',
+            'Publications by authorship position: ' +
+            labels.map((l, i) => `${l} ${values[i]}`).join(', ') + '.');
+
+        charts.authorship = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Publications',
+                    data: values,
+                    backgroundColor: palette.accent,
+                    borderRadius: 4,
+                    borderSkipped: 'bottom',
+                    maxBarThickness: 52
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip },
+                scales: { x: axisBare, y: { ...axis, beginAtZero: true } }
+            }
+        });
+    }
+
+    /* ---------- Keywords ---------- */
+
+    function renderKeywords(data) {
+        const terms = (data.research_areas || []).slice(0, 10);
+
+        const canvas = document.getElementById('keywords-chart');
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label',
+            'Most frequent title keywords: ' +
+            terms.map(t => `${t.term} ${t.count}`).join(', ') + '.');
+
+        charts.keywords = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: terms.map(t => t.term),
+                datasets: [{
+                    label: 'Occurrences',
+                    data: terms.map(t => t.count),
+                    backgroundColor: palette.accent,
+                    borderRadius: 4,
+                    borderSkipped: 'left',
+                    maxBarThickness: 18
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip },
+                scales: {
+                    x: { ...axis, beginAtZero: true },
+                    y: { ...axisBare, ticks: { ...axisBare.ticks, color: palette.ink2 } }
+                }
+            }
+        });
+    }
+
+    /* ---------- Publications ---------- */
+
+    function renderPublications(data) {
+        const list = document.getElementById('publications');
+        const pubs = data.publications || [];
+
+        if (!pubs.length) {
+            document.getElementById('publications-empty').hidden = false;
+            return;
+        }
+
+        pubs.forEach(pub => {
+            const item = document.createElement('li');
+
+            const body = document.createElement('div');
+            const isLink = pub.url && /^https?:\/\//i.test(pub.url);
+            const title = document.createElement(isLink ? 'a' : 'span');
+            title.className = 'pub-title';
+            title.textContent = pub.title || 'Untitled';
+            if (isLink) {
+                title.href = pub.url;
+                title.target = '_blank';
+                title.rel = 'noopener noreferrer';
+            }
+            body.appendChild(title);
+
+            const meta = document.createElement('p');
+            meta.className = 'pub-meta';
+            if (pub.venue) {
+                const venue = document.createElement('em');
+                venue.textContent = pub.venue;
+                meta.appendChild(venue);
+            }
+            if (pub.year) {
+                meta.appendChild(document.createTextNode(pub.venue ? `, ${pub.year}` : String(pub.year)));
+            }
+            if (meta.childNodes.length) body.appendChild(meta);
+            item.appendChild(body);
+
+            const cites = document.createElement('div');
+            cites.className = 'pub-cites';
+            cites.textContent = Number(pub.citations || 0).toLocaleString();
+            item.appendChild(cites);
+
+            list.appendChild(item);
+        });
+    }
+
+    loadDashboard();
+</script>
 </body>
 </html>
-
